@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ancient Philosophy · Early Career Researchers in the UK</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ── Reset & base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+
+:root {
+  --bg:         #f6f4ef;
+  --bg-card:    #ffffff;
+  --ink:        #1c1814;
+  --ink-mid:    #5a5550;
+  --ink-muted:  #8a857e;
+  --ink-faint:  #bbb5ad;
+  --border:     rgba(28,24,20,0.09);
+  --border-mid: rgba(28,24,20,0.18);
+  --accent:     #3d3480;
+  --accent-bg:  #eceaf6;
+
+  --plato:          #3d3480;
+  --plato-light:    #eceaf6;
+  --aristotle:      #1a6b52;
+  --aristotle-light:#e2f2ea;
+  --hellenistic:    #8a4218;
+  --hellenistic-light:#f4ece3;
+  --presocratics:   #575350;
+  --presocratics-light:#ececec;
+
+  --tag-meta:  #eceaf6; --tag-meta-t:  #2a2260;
+  --tag-eth:   #e2f2ea; --tag-eth-t:   #0e4a2e;
+  --tag-epis:  #fdf2e2; --tag-epis-t:  #6b3800;
+  --tag-mind:  #fce8ef; --tag-mind-t:  #6b0030;
+  --tag-pol:   #e2edf8; --tag-pol-t:   #0b3860;
+  --tag-lang:  #e8f4e3; --tag-lang-t:  #1a4808;
+
+  --tab-h: 52px;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 400;
+  min-height: 100vh;
+}
+
+a { color: var(--accent); }
+
+/* ── Header ── */
+header {
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  padding: 2.2rem 2rem 0;
+}
+.header-inner { max-width: 1120px; margin: 0 auto; }
+.eyebrow {
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-bottom: 0.5rem;
+}
+h1 {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: clamp(1.7rem, 3.5vw, 2.6rem);
+  font-weight: 400;
+  line-height: 1.15;
+  margin-bottom: 0.55rem;
+}
+h1 em { font-style: italic; color: var(--accent); }
+.tagline {
+  font-size: 0.88rem;
+  color: var(--ink-muted);
+  max-width: 540px;
+  line-height: 1.6;
+  margin-bottom: 1.6rem;
+}
+
+/* ── Tabs ── */
+.tabs {
+  display: flex;
+  gap: 0;
+  border-top: 1px solid var(--border);
+}
+.tab-btn {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: var(--ink-muted);
+  background: none;
+  border: none;
+  border-top: 2px solid transparent;
+  padding: 0 1.4rem;
+  height: var(--tab-h);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.tab-btn:hover { color: var(--ink); }
+.tab-btn.active {
+  color: var(--accent);
+  border-top-color: var(--accent);
+  font-weight: 500;
+}
+.tab-icon { font-size: 15px; }
+
+/* ── Panels ── */
+.panel-wrap { max-width: 1120px; margin: 0 auto; padding: 1.5rem 1.5rem 4rem; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ── Shared card ── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+/* ── Tags ── */
+.tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 500;
+  border-radius: 20px;
+  padding: 3px 10px;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   VIEW 1 — NETWORK
+   ========================================================= */
+#view-network .toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 1rem;
+}
+.toolbar-label {
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-right: 4px;
+}
+.filter-btn {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-mid);
+  border-radius: 20px;
+  padding: 5px 13px;
+  color: var(--ink-muted);
+  cursor: pointer;
+  transition: all 0.13s;
+}
+.filter-btn:hover { color: var(--ink); border-color: var(--ink); }
+.filter-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 500;
+}
+
+.net-layout {
+  display: grid;
+  grid-template-columns: 1fr 290px;
+  gap: 1rem;
+  align-items: start;
+}
+@media (max-width: 740px) { .net-layout { grid-template-columns: 1fr; } }
+
+.canvas-outer { overflow: hidden; border-radius: 12px; }
+canvas#net {
+  display: block;
+  width: 100%;
+  cursor: grab;
+  border-radius: 12px;
+}
+canvas#net:active { cursor: grabbing; }
+.canvas-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  padding: 9px 14px;
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+  border-radius: 0 0 12px 12px;
+}
+.leg-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  color: var(--ink-muted);
+}
+.leg-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+
+.net-panel {
+  border-radius: 12px;
+  padding: 1.2rem;
+  position: sticky;
+  top: 1rem;
+  align-self: start;
+}
+.net-panel-empty {
+  font-family: 'EB Garamond', serif;
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--ink-faint);
+  line-height: 1.6;
+}
+.np-focus { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 3px; }
+.np-name { font-family: 'EB Garamond', serif; font-size: 1.3rem; color: var(--ink); margin-bottom: 1px; }
+.np-uni  { font-size: 0.78rem; color: var(--ink-muted); margin-bottom: 10px; }
+.np-links { font-size: 0.76rem; margin-bottom: 12px; }
+.np-section { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); margin: 12px 0 6px; }
+.tag-row { display: flex; flex-wrap: wrap; gap: 5px; }
+.np-divider { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
+.conn-item { padding: 7px 0; border-top: 1px solid var(--border); }
+.conn-item:first-child { border-top: none; }
+.conn-name   { font-size: 0.85rem; font-weight: 500; color: var(--ink); }
+.conn-detail { font-size: 0.74rem; color: var(--ink-muted); margin-top: 1px; }
+
+/* =========================================================
+   VIEW 2 — UK MAP
+   ========================================================= */
+.map-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+@media (max-width: 660px) { .map-layout { grid-template-columns: 1fr; } }
+
+.map-col { position: relative; }
+svg#uk-map { width: 100%; height: auto; display: block; }
+
+.map-detail {
+  padding: 1.4rem;
+  border-radius: 12px;
+  min-height: 260px;
+}
+.md-empty {
+  font-family: 'EB Garamond', serif;
+  font-style: italic;
+  color: var(--ink-faint);
+  font-size: 1rem;
+  line-height: 1.6;
+  padding: 1rem 0;
+}
+.md-uni  { font-family: 'EB Garamond', serif; font-size: 1.3rem; color: var(--ink); margin-bottom: 2px; }
+.md-city { font-size: 0.78rem; color: var(--ink-muted); margin-bottom: 1rem; }
+.researcher-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.r-item {
+  padding: 9px 0;
+  border-top: 1px solid var(--border);
+}
+.r-item:first-child { border-top: none; }
+.r-name  { font-size: 0.9rem; font-weight: 500; color: var(--ink); }
+.r-focus { font-size: 0.78rem; color: var(--ink-muted); }
+
+/* map dot tooltip */
+.map-tooltip {
+  position: absolute;
+  background: var(--bg-card);
+  border: 1px solid var(--border-mid);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 0.76rem;
+  color: var(--ink);
+  pointer-events: none;
+  white-space: nowrap;
+  display: none;
+  z-index: 10;
+}
+
+/* =========================================================
+   VIEW 3 — BY PHILOSOPHER
+   ========================================================= */
+.phil-intro { font-size: 0.85rem; color: var(--ink-muted); margin-bottom: 1.2rem; line-height: 1.5; }
+
+.phil-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+  gap: 10px;
+  margin-bottom: 1.4rem;
+}
+.phil-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.2rem 0.9rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.13s, box-shadow 0.13s;
+}
+.phil-card:hover { border-color: var(--border-mid); }
+.phil-card.active {
+  border: 2px solid var(--accent);
+  background: var(--accent-bg);
+}
+.phil-bust {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  margin: 0 auto 10px;
+  overflow: hidden;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+.phil-name  { font-family: 'EB Garamond', serif; font-size: 1.05rem; color: var(--ink); }
+.phil-dates { font-size: 0.72rem; color: var(--ink-muted); margin-top: 2px; }
+.phil-count { font-size: 0.72rem; font-weight: 500; color: var(--accent); margin-top: 4px; }
+
+.phil-result {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.4rem;
+  min-height: 120px;
+}
+.pr-empty {
+  font-family: 'EB Garamond', serif;
+  font-style: italic;
+  color: var(--ink-faint);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+.pr-heading { font-family: 'EB Garamond', serif; font-size: 1.2rem; color: var(--ink); margin-bottom: 1rem; }
+.scholar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 9px;
+}
+.scholar-chip {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 13px;
+}
+.sc-name { font-size: 0.88rem; font-weight: 500; color: var(--ink); }
+.sc-uni  { font-size: 0.74rem; color: var(--ink-muted); margin-top: 2px; }
+.sc-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 7px; }
+
+/* ── Footer ── */
+footer {
+  text-align: center;
+  padding: 1.8rem 2rem;
+  font-size: 0.76rem;
+  color: var(--ink-faint);
+  border-top: 1px solid var(--border);
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     SHARED DATA — edit this section only
+     ══════════════════════════════════════════
+
+Each entry in SCHOLARS has:
+  name    — full name
+  uni     — university / institution
+  city    — city (must match a key in UNI_CITIES below)
+  focus   — primary ancient focus: 'Plato' | 'Aristotle' | 'Hellenistic' | 'Pre-Socratics'
+  tags    — research themes (controls network edges):
+            'metaphysics' | 'ethics' | 'epistemology' | 'mind' | 'politics' | 'language'
+  email   — contact email, or ''
+  web     — profile URL, or ''
+
+UNI_CITIES maps city names → SVG coordinates on the UK map.
+If you add a university in a new city, add its cx/cy here.
+-->
+
+<script>
+const SCHOLARS = [
+  /* ── Plato ──────────────────────────────── */
+  { name:'Alice Merton',     uni:'University of Oxford',           city:'Oxford',     focus:'Plato',         tags:['metaphysics','epistemology'], email:'a.merton@philosophy.ox.ac.uk', web:'' },
+  { name:'Ben Calloway',     uni:'University of Cambridge',        city:'Cambridge',  focus:'Plato',         tags:['metaphysics','ethics'],        email:'',                             web:'' },
+  { name:'Priya Sharma',     uni:"King's College London",          city:'London',     focus:'Plato',         tags:['politics','ethics'],           email:'',                             web:'' },
+  { name:'Tom Ellison',      uni:'University of Edinburgh',        city:'Edinburgh',  focus:'Plato',         tags:['politics','metaphysics'],      email:'',                             web:'' },
+
+  /* ── Aristotle ──────────────────────────── */
+  { name:'Sara Lindqvist',   uni:'University of Cambridge',        city:'Cambridge',  focus:'Aristotle',     tags:['metaphysics','mind'],          email:'',                             web:'' },
+  { name:'Clara Hughes',     uni:'University of Bristol',          city:'Bristol',    focus:'Aristotle',     tags:['mind','ethics'],               email:'',                             web:'' },
+  { name:'Daniel Park',      uni:'University College London',      city:'London',     focus:'Aristotle',     tags:['ethics','politics'],           email:'',                             web:'' },
+  { name:'Fatima Al-Rashid', uni:'University of Manchester',       city:'Manchester', focus:'Aristotle',     tags:['language','epistemology'],     email:'',                             web:'' },
+  { name:'Marcus Webb',      uni:'University of Oxford',           city:'Oxford',     focus:'Aristotle',     tags:['language','mind'],             email:'',                             web:'' },
+
+  /* ── Hellenistic ─────────────────────────── */
+  { name:'Isabelle Roy',     uni:'University of Leeds',            city:'Leeds',      focus:'Hellenistic',   tags:['ethics','epistemology'],       email:'',                             web:'' },
+  { name:'James Chen',       uni:'University of Warwick',          city:'Coventry',   focus:'Hellenistic',   tags:['ethics','politics'],           email:'',                             web:'' },
+  { name:'Keisha Bright',    uni:'University of Edinburgh',        city:'Edinburgh',  focus:'Hellenistic',   tags:['ethics','mind'],               email:'',                             web:'' },
+  { name:'Lena Kovač',       uni:'University of Nottingham',       city:'Nottingham', focus:'Hellenistic',   tags:['epistemology','language'],     email:'',                             web:'' },
+  { name:'Yemi Adeyemi',     uni:'Birkbeck, University of London', city:'London',     focus:'Hellenistic',   tags:['language','ethics'],           email:'',                             web:'' },
+
+  /* ── Pre-Socratics ───────────────────────── */
+  { name:'George Okafor',    uni:'University of Glasgow',          city:'Glasgow',    focus:'Pre-Socratics', tags:['metaphysics','language'],      email:'',                             web:'' },
+  { name:'Helena Voss',      uni:'Durham University',              city:'Durham',     focus:'Pre-Socratics', tags:['metaphysics','epistemology'],  email:'',                             web:'' },
+];
+
+/* Ancient philosophers shown in View 3.
+   'key' must match a value used in scholars' focus field (or use 'all' for everyone). */
+const PHILOSOPHERS = [
+  { key:'Plato',         label:'Plato',         dates:'428–348 BCE', icon:'🏛', blurb:'Republic, Phaedo, Symposium' },
+  { key:'Aristotle',     label:'Aristotle',     dates:'384–322 BCE', icon:'📜', blurb:'Metaphysics, Ethics, Politics' },
+  { key:'Hellenistic',   label:'Hellenistic',   dates:'3rd c. BCE –', icon:'⚖️', blurb:'Stoics, Epicureans, Sceptics' },
+  { key:'Pre-Socratics', label:'Pre-Socratics', dates:'6th–5th c. BCE', icon:'🌊', blurb:'Heraclitus, Parmenides, Democritus' },
+];
+
+/* Map: city name → SVG position (cx, cy) within the 200×380 UK outline */
+const UNI_CITIES = {
+  Edinburgh:  { cx:87,  cy:78,  label:'Edinburgh'  },
+  Glasgow:    { cx:72,  cy:88,  label:'Glasgow'     },
+  Durham:     { cx:95,  cy:118, label:'Durham'      },
+  Leeds:      { cx:90,  cy:140, label:'Leeds'       },
+  Manchester: { cx:80,  cy:152, label:'Manchester'  },
+  Nottingham: { cx:97,  cy:175, label:'Nottingham'  },
+  Coventry:   { cx:90,  cy:185, label:'Coventry'    },
+  Cambridge:  { cx:112, cy:185, label:'Cambridge'   },
+  Oxford:     { cx:88,  cy:198, label:'Oxford'      },
+  London:     { cx:100, cy:213, label:'London'      },
+  Bristol:    { cx:70,  cy:222, label:'Bristol'     },
+};
+
+/* Research theme metadata */
+const THEMES = {
+  metaphysics:  { label:'Metaphysics',          bg:'var(--tag-meta)',  txt:'var(--tag-meta-t)'  },
+  ethics:       { label:'Ethics',               bg:'var(--tag-eth)',   txt:'var(--tag-eth-t)'   },
+  epistemology: { label:'Epistemology',          bg:'var(--tag-epis)',  txt:'var(--tag-epis-t)'  },
+  mind:         { label:'Phil. of mind',        bg:'var(--tag-mind)',  txt:'var(--tag-mind-t)'  },
+  politics:     { label:'Political phil.',      bg:'var(--tag-pol)',   txt:'var(--tag-pol-t)'   },
+  language:     { label:'Language & logic',     bg:'var(--tag-lang)',  txt:'var(--tag-lang-t)'  },
+};
+
+const FOCUS_COLOR = {
+  'Plato':          'var(--plato)',
+  'Aristotle':      'var(--aristotle)',
+  'Hellenistic':    'var(--hellenistic)',
+  'Pre-Socratics':  'var(--presocratics)',
+};
+const FOCUS_LIGHT = {
+  'Plato':          'var(--plato-light)',
+  'Aristotle':      'var(--aristotle-light)',
+  'Hellenistic':    'var(--hellenistic-light)',
+  'Pre-Socratics':  'var(--presocratics-light)',
+};
+const FOCUS_HEX = {
+  'Plato':          '#3d3480',
+  'Aristotle':      '#1a6b52',
+  'Hellenistic':    '#8a4218',
+  'Pre-Socratics':  '#575350',
+};
+</script>
+
+<!-- ══════════════════════════════ HEADER ══════════════════════════════ -->
+<header>
+  <div class="header-inner">
+    <p class="eyebrow">UK Research Network</p>
+    <h1>Early Career Researchers<br>in <em>Ancient Philosophy</em></h1>
+    <p class="tagline">
+      An interactive directory of early career scholars based in the UK.
+      Explore the network of shared interests, browse by location, or discover
+      who works on the thinkers you care about most.
+    </p>
+    <nav class="tabs" role="tablist">
+      <button class="tab-btn active" role="tab" aria-selected="true"  onclick="switchTab('network',    this)"><span class="tab-icon">◎</span> Research network</button>
+      <button class="tab-btn"        role="tab" aria-selected="false" onclick="switchTab('map',        this)"><span class="tab-icon">◈</span> Browse by location</button>
+      <button class="tab-btn"        role="tab" aria-selected="false" onclick="switchTab('philosopher',this)"><span class="tab-icon">◇</span> Browse by philosopher</button>
+    </nav>
+  </div>
+</header>
+
+<!-- ══════════════════════════════ PANELS ══════════════════════════════ -->
+<div class="panel-wrap">
+
+  <!-- ─────────────── VIEW 1: NETWORK ─────────────── -->
+  <div id="view-network" class="tab-panel active">
+    <div class="toolbar">
+      <span class="toolbar-label">Filter by theme</span>
+      <button class="filter-btn active" onclick="setNetFilter('all',this)">All</button>
+      <button class="filter-btn" onclick="setNetFilter('metaphysics',this)">Metaphysics</button>
+      <button class="filter-btn" onclick="setNetFilter('ethics',this)">Ethics</button>
+      <button class="filter-btn" onclick="setNetFilter('epistemology',this)">Epistemology</button>
+      <button class="filter-btn" onclick="setNetFilter('mind',this)">Phil. of mind</button>
+      <button class="filter-btn" onclick="setNetFilter('politics',this)">Political phil.</button>
+      <button class="filter-btn" onclick="setNetFilter('language',this)">Language &amp; logic</button>
+    </div>
+    <div class="net-layout">
+      <div>
+        <div class="card canvas-outer">
+          <canvas id="net"></canvas>
+        </div>
+        <div class="canvas-foot">
+          <div class="leg-item"><div class="leg-dot" style="background:var(--plato)"></div>Plato</div>
+          <div class="leg-item"><div class="leg-dot" style="background:var(--aristotle)"></div>Aristotle</div>
+          <div class="leg-item"><div class="leg-dot" style="background:var(--hellenistic)"></div>Hellenistic</div>
+          <div class="leg-item"><div class="leg-dot" style="background:var(--presocratics)"></div>Pre-Socratics</div>
+          <div class="leg-item" style="margin-left:6px">
+            <svg width="26" height="10"><line x1="0" y1="5" x2="26" y2="5" stroke="var(--accent)" stroke-width="2.2"/></svg>
+            Strong overlap
+          </div>
+          <div class="leg-item">
+            <svg width="26" height="10"><line x1="0" y1="5" x2="26" y2="5" stroke="var(--ink-faint)" stroke-width="1" stroke-dasharray="4,3"/></svg>
+            Partial overlap
+          </div>
+        </div>
+      </div>
+      <div class="card net-panel" id="net-panel">
+        <p class="net-panel-empty">Click any node to see a researcher's profile and discover who shares their interests.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────── VIEW 2: MAP ─────────────── -->
+  <div id="view-map" class="tab-panel">
+    <p class="phil-intro">Click a marker on the map to see the researchers based at that institution.</p>
+    <div class="map-layout">
+      <div class="map-col">
+        <div class="card" style="padding:10px; position:relative;">
+          <svg id="uk-map" viewBox="0 0 200 380" xmlns="http://www.w3.org/2000/svg"></svg>
+          <div class="map-tooltip" id="map-tooltip"></div>
+        </div>
+      </div>
+      <div class="card map-detail" id="map-detail">
+        <p class="md-empty">Select a university marker on the map to see who is based there.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────── VIEW 3: BY PHILOSOPHER ─────────────── -->
+  <div id="view-philosopher" class="tab-panel">
+    <p class="phil-intro">Select an ancient thinker to see which early career researchers are working on them today.</p>
+    <div class="phil-grid" id="phil-grid"></div>
+    <div class="phil-result" id="phil-result">
+      <p class="pr-empty">Choose a philosopher above to see the researchers working on them.</p>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Maintained by [your name / organisation]. To add or update a researcher, contact <a href="mailto:you@example.com">you@example.com</a>.
+</footer>
+
+<!-- ══════════════════════════════ SCRIPTS ══════════════════════════════ -->
+<script>
+/* ── Tab switching ── */
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+  document.getElementById('view-' + id).classList.add('active');
+  btn.classList.add('active');
+  btn.setAttribute('aria-selected','true');
+  if (id === 'network') initNetwork();
+  if (id === 'map')     initMap();
+  if (id === 'philosopher') initPhil();
+}
+
+/* ══════════════════════════════════════════════
+   VIEW 1 — NETWORK
+   ══════════════════════════════════════════════ */
+let netReady = false;
+let netSelected = null;
+let netFilter = 'all';
+let dragging = null, dragOX = 0, dragOY = 0, dragMoved = false;
+const R = 19;
+
+const nodes = SCHOLARS.map((s, i) => ({
+  ...s, id: i,
+  x: 0, y: 0, vx: 0, vy: 0,
+}));
+
+const edges = [];
+for (let i = 0; i < nodes.length; i++)
+  for (let j = i + 1; j < nodes.length; j++) {
+    const shared = nodes[i].tags.filter(t => nodes[j].tags.includes(t));
+    if (shared.length) edges.push({ a:i, b:j, shared, strength:shared.length });
+  }
+
+function initNetwork() {
+  if (netReady) return;
+  netReady = true;
+  const canvas = document.getElementById('net');
+  const wrap   = canvas.parentElement;
+  const W = () => wrap.clientWidth;
+  const H = () => Math.max(400, Math.round(W() * 0.56));
+
+  function resize() {
+    canvas.width  = W();
+    canvas.height = H();
+    scatter();
+  }
+  function scatter() {
+    nodes.forEach((n, i) => {
+      const a = (i / nodes.length) * 2 * Math.PI;
+      n.x = W()/2 + W()*0.27*Math.cos(a);
+      n.y = H()/2 + H()*0.34*Math.sin(a);
+      n.vx = n.vy = 0;
+    });
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function visSet() {
+    if (netFilter === 'all') return new Set(nodes.map(n => n.id));
+    return new Set(nodes.filter(n => n.tags.includes(netFilter)).map(n => n.id));
+  }
+
+  function simulate() {
+    const vis = visSet();
+    const w = canvas.width, h = canvas.height;
+    nodes.forEach(n => { n.fx = 0; n.fy = 0; });
+    nodes.forEach((a, i) => {
+      if (!vis.has(a.id)) return;
+      a.fx += (w/2 - a.x)*0.011; a.fy += (h/2 - a.y)*0.011;
+      nodes.forEach((b, j) => {
+        if (j<=i || !vis.has(b.id)) return;
+        const dx=b.x-a.x, dy=b.y-a.y, d=Math.sqrt(dx*dx+dy*dy)||1;
+        const f=2000/(d*d);
+        a.fx-=f*dx/d; a.fy-=f*dy/d; b.fx+=f*dx/d; b.fy+=f*dy/d;
+      });
+    });
+    edges.forEach(e => {
+      const a=nodes[e.a], b=nodes[e.b];
+      if (!vis.has(a.id)||!vis.has(b.id)) return;
+      const dx=b.x-a.x, dy=b.y-a.y, d=Math.sqrt(dx*dx+dy*dy)||1;
+      const ideal=e.strength>=2?100:175, f=(d-ideal)*0.013*e.strength;
+      a.fx+=f*dx/d; a.fy+=f*dy/d; b.fx-=f*dx/d; b.fy-=f*dy/d;
+    });
+    const pad=R+3;
+    nodes.forEach(n => {
+      if (!vis.has(n.id)||n===dragging) return;
+      n.vx=(n.vx+n.fx)*0.80; n.vy=(n.vy+n.fy)*0.80;
+      n.x=Math.max(pad,Math.min(canvas.width-pad,n.x+n.vx));
+      n.y=Math.max(pad,Math.min(canvas.height-pad,n.y+n.vy));
+    });
+  }
+
+  function draw() {
+    const ctx=canvas.getContext('2d');
+    const w=canvas.width, h=canvas.height;
+    const vis=visSet();
+    ctx.clearRect(0,0,w,h);
+
+    edges.forEach(e => {
+      const a=nodes[e.a], b=nodes[e.b];
+      if (!vis.has(a.id)||!vis.has(b.id)) return;
+      const hi=netSelected&&(netSelected.id===e.a||netSelected.id===e.b);
+      ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y);
+      if (e.strength>=2) {
+        ctx.strokeStyle=hi?'#3d3480':'rgba(61,52,128,0.25)';
+        ctx.lineWidth=hi?2.4:1.6; ctx.setLineDash([]);
+      } else {
+        ctx.strokeStyle=hi?'#8a857e':'rgba(180,175,165,0.4)';
+        ctx.lineWidth=hi?1.4:0.9; ctx.setLineDash([5,4]);
+      }
+      ctx.stroke(); ctx.setLineDash([]);
+    });
+
+    nodes.forEach(n => {
+      if (!vis.has(n.id)) return;
+      const isSel=netSelected&&netSelected.id===n.id;
+      const isConn=netSelected&&edges.some(e=>(e.a===netSelected.id&&e.b===n.id)||(e.b===netSelected.id&&e.a===n.id));
+      ctx.globalAlpha=(netSelected&&!isSel&&!isConn)?0.18:1;
+
+      if (isSel) {
+        ctx.beginPath(); ctx.arc(n.x,n.y,R+5,0,2*Math.PI);
+        ctx.fillStyle=FOCUS_LIGHT[n.focus]||'#eee'; ctx.fill();
+      }
+      ctx.beginPath(); ctx.arc(n.x,n.y,R,0,2*Math.PI);
+      ctx.fillStyle=FOCUS_HEX[n.focus]||'#888'; ctx.fill();
+      ctx.fillStyle='#fff';
+      ctx.font='500 11px "DM Sans",sans-serif';
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(n.name.split(' ').map(w=>w[0]).join('').slice(0,2),n.x,n.y);
+      ctx.fillStyle=isSel?FOCUS_HEX[n.focus]:'rgba(80,75,68,0.85)';
+      ctx.font=(isSel?'500 ':'')+'10.5px "DM Sans",sans-serif';
+      ctx.fillText(n.name.split(' ')[0],n.x,n.y+R+10);
+      ctx.globalAlpha=1;
+    });
+  }
+
+  function tick() { simulate(); draw(); requestAnimationFrame(tick); }
+  tick();
+
+  function hitTest(mx,my) {
+    const vis=visSet();
+    for (const n of nodes) {
+      if (!vis.has(n.id)) continue;
+      const dx=mx-n.x, dy=my-n.y;
+      if (dx*dx+dy*dy<(R+6)*(R+6)) return n;
+    }
+    return null;
+  }
+  function getPos(e) {
+    const r=canvas.getBoundingClientRect();
+    const sx=canvas.width/r.width, sy=canvas.height/r.height;
+    const src=e.touches?e.touches[0]:e;
+    return {x:(src.clientX-r.left)*sx,y:(src.clientY-r.top)*sy};
+  }
+
+  canvas.addEventListener('mousedown',e=>{
+    const {x,y}=getPos(e), n=hitTest(x,y);
+    if(n){dragging=n;dragOX=x-n.x;dragOY=y-n.y;dragMoved=false;}
+  });
+  canvas.addEventListener('mousemove',e=>{
+    if(!dragging)return;
+    const {x,y}=getPos(e);
+    dragging.x=Math.max(R+2,Math.min(canvas.width-R-2,x-dragOX));
+    dragging.y=Math.max(R+2,Math.min(canvas.height-R-2,y-dragOY));
+    dragging.vx=dragging.vy=0; dragMoved=true;
+  });
+  canvas.addEventListener('mouseup',e=>{
+    if(dragging&&!dragMoved) selectNode(dragging);
+    else if(!dragging){const{x,y}=getPos(e);const n=hitTest(x,y);if(n)selectNode(n);else clearNetPanel();}
+    dragging=null;
+  });
+  canvas.addEventListener('touchstart',e=>{
+    const{x,y}=getPos(e),n=hitTest(x,y);
+    if(n){dragging=n;dragOX=x-n.x;dragOY=y-n.y;dragMoved=false;}
+  },{passive:true});
+  canvas.addEventListener('touchmove',e=>{
+    if(!dragging)return; e.preventDefault();
+    const{x,y}=getPos(e);
+    dragging.x=Math.max(R+2,Math.min(canvas.width-R-2,x-dragOX));
+    dragging.y=Math.max(R+2,Math.min(canvas.height-R-2,y-dragOY));
+    dragging.vx=dragging.vy=0; dragMoved=true;
+  },{passive:false});
+  canvas.addEventListener('touchend',e=>{if(dragging&&!dragMoved)selectNode(dragging);dragging=null;});
+}
+
+function tagHtml(tags) {
+  return tags.map(t=>{
+    const th=THEMES[t]||{label:t,bg:'#eee',txt:'#333'};
+    return `<span class="tag" style="background:${th.bg};color:${th.txt}">${th.label}</span>`;
+  }).join('');
+}
+
+function selectNode(n) {
+  netSelected=n;
+  const conns=edges.filter(e=>e.a===n.id||e.b===n.id)
+    .sort((a,b)=>b.strength-a.strength)
+    .map(e=>({s:nodes[e.a===n.id?e.b:e.a],shared:e.shared}));
+  const links=[
+    n.email?`<a href="mailto:${n.email}">${n.email}</a>`:'',
+    n.web?`<a href="${n.web}" target="_blank" rel="noopener">Profile</a>`:'',
+  ].filter(Boolean).join(' &middot; ');
+  document.getElementById('net-panel').innerHTML=`
+    <p class="np-focus">${n.focus}</p>
+    <p class="np-name">${n.name}</p>
+    <p class="np-uni">${n.uni}</p>
+    ${links?`<p class="np-links">${links}</p>`:''}
+    <p class="np-section">Research themes</p>
+    <div class="tag-row">${tagHtml(n.tags)}</div>
+    <hr class="np-divider">
+    <p class="np-section">Shares interests with (${conns.length})</p>
+    ${conns.length?conns.map(c=>`
+      <div class="conn-item">
+        <div class="conn-name">${c.s.name}</div>
+        <div class="conn-detail">${c.shared.map(t=>THEMES[t]?THEMES[t].label:t).join(', ')} · ${c.s.uni}</div>
+      </div>`).join(''):'<p style="font-size:0.8rem;color:var(--ink-faint)">No connections in current view</p>'}
+  `;
+}
+function clearNetPanel() {
+  netSelected=null;
+  document.getElementById('net-panel').innerHTML='<p class="net-panel-empty">Click any node to see a researcher\'s profile and discover who shares their interests.</p>';
+}
+function setNetFilter(tag,btn) {
+  netFilter=tag; netSelected=null; clearNetPanel();
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+/* ══════════════════════════════════════════════
+   VIEW 2 — MAP
+   ══════════════════════════════════════════════ */
+let mapReady=false;
+
+function initMap() {
+  if (mapReady) return;
+  mapReady=true;
+
+  /* Group scholars by city */
+  const byCity={};
+  SCHOLARS.forEach(s=>{
+    if(!byCity[s.city]) byCity[s.city]=[];
+    byCity[s.city].push(s);
+  });
+
+  const svg=document.getElementById('uk-map');
+
+  /* UK outline path */
+  const outline=document.createElementNS('http://www.w3.org/2000/svg','path');
+  outline.setAttribute('d',`
+    M85,10 L95,8 L110,14 L118,22 L115,35 L105,42 L98,55 L102,68
+    L110,75 L115,88 L112,100 L105,108 L100,120 L95,132 L92,145
+    L88,158 L90,170 L95,180 L98,192 L96,205 L90,218 L85,230
+    L80,242 L75,255 L72,268 L70,278 L68,288 L65,300 L60,310
+    L58,320 L62,330 L70,338 L75,345 L72,355 L65,360 L60,355
+    L55,345 L50,338 L45,330 L48,320 L52,310 L56,300 L58,288
+    L55,278 L52,268 L55,255 L58,242 L60,230 L62,218 L60,205
+    L58,192 L56,180 L55,168 L58,155 L62,142 L65,130 L68,118
+    L72,108 L75,98 L72,88 L68,78 L65,68 L68,55 L74,44 L80,35
+    L82,22 Z
+    M115,35 L125,32 L135,38 L140,50 L138,62 L130,68 L125,78
+    L122,88 L118,98 L115,108 L112,100 L115,88 L110,75 L102,68
+    L98,55 L105,42 Z
+    M58,288 L50,290 L42,298 L38,308 L40,318 L48,322 L55,318
+    L58,308 L60,300 Z
+  `);
+  outline.setAttribute('fill','#f0ede6');
+  outline.setAttribute('stroke','#c8c2b8');
+  outline.setAttribute('stroke-width','1');
+  svg.appendChild(outline);
+
+  /* Dots for each city that has scholars */
+  const tooltip=document.getElementById('map-tooltip');
+  Object.entries(UNI_CITIES).forEach(([city,cfg])=>{
+    if(!byCity[city]) return;
+    const count=byCity[city].length;
+    const r=7+count*1.5;
+
+    const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.style.cursor='pointer';
+
+    const circle=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    circle.setAttribute('cx',cfg.cx); circle.setAttribute('cy',cfg.cy);
+    circle.setAttribute('r',r);
+    circle.setAttribute('fill','#3d3480');
+    circle.setAttribute('opacity','0.82');
+    g.appendChild(circle);
+
+    const countTxt=document.createElementNS('http://www.w3.org/2000/svg','text');
+    countTxt.setAttribute('x',cfg.cx); countTxt.setAttribute('y',cfg.cy);
+    countTxt.setAttribute('text-anchor','middle'); countTxt.setAttribute('dominant-baseline','central');
+    countTxt.setAttribute('fill','#fff'); countTxt.setAttribute('font-size','9');
+    countTxt.setAttribute('font-family','"DM Sans",sans-serif');
+    countTxt.setAttribute('font-weight','500');
+    countTxt.textContent=count;
+    g.appendChild(countTxt);
+
+    const nameTxt=document.createElementNS('http://www.w3.org/2000/svg','text');
+    nameTxt.setAttribute('x',cfg.cx+r+4); nameTxt.setAttribute('y',cfg.cy+1);
+    nameTxt.setAttribute('dominant-baseline','central');
+    nameTxt.setAttribute('fill','#5a5550'); nameTxt.setAttribute('font-size','9');
+    nameTxt.setAttribute('font-family','"DM Sans",sans-serif');
+    nameTxt.textContent=cfg.label;
+    g.appendChild(nameTxt);
+
+    g.addEventListener('click',()=>showMapDetail(city,byCity[city]));
+    g.addEventListener('mouseenter',e=>{
+      tooltip.style.display='block';
+      tooltip.textContent=`${cfg.label} — ${count} researcher${count>1?'s':''}`;
+      circle.setAttribute('opacity','1');
+    });
+    g.addEventListener('mouseleave',()=>{
+      tooltip.style.display='none';
+      circle.setAttribute('opacity','0.82');
+    });
+    svg.appendChild(g);
+  });
+}
+
+function showMapDetail(city,scholars) {
+  const unis=[...new Set(scholars.map(s=>s.uni))];
+  const rows=scholars.map(s=>`
+    <div class="r-item">
+      <div class="r-name">${s.name}</div>
+      <div class="r-focus">${s.uni} · ${s.focus}${s.email?` · <a href="mailto:${s.email}">${s.email}</a>`:''}</div>
+      <div class="tag-row" style="margin-top:5px">${tagHtml(s.tags)}</div>
+    </div>`).join('');
+  document.getElementById('map-detail').innerHTML=`
+    <p class="md-uni">${unis.length===1?unis[0]:city}</p>
+    <p class="md-city">${city} &middot; ${scholars.length} researcher${scholars.length>1?'s':''}</p>
+    <div class="researcher-row">${rows}</div>
+  `;
+}
+
+/* ══════════════════════════════════════════════
+   VIEW 3 — BY PHILOSOPHER
+   ══════════════════════════════════════════════ */
+let philReady=false;
+
+function initPhil() {
+  if (philReady) return;
+  philReady=true;
+  const grid=document.getElementById('phil-grid');
+  PHILOSOPHERS.forEach(p=>{
+    const count=SCHOLARS.filter(s=>s.focus===p.key).length;
+    const card=document.createElement('div');
+    card.className='phil-card';
+    card.dataset.key=p.key;
+    card.innerHTML=`
+      <div class="phil-bust">${p.icon}</div>
+      <div class="phil-name">${p.label}</div>
+      <div class="phil-dates">${p.dates}</div>
+      <div class="phil-count">${count} researcher${count!==1?'s':''}</div>
+    `;
+    card.addEventListener('click',()=>selectPhil(p,card));
+    grid.appendChild(card);
+  });
+}
+
+function selectPhil(p,card) {
+  document.querySelectorAll('.phil-card').forEach(c=>c.classList.remove('active'));
+  card.classList.add('active');
+  const scholars=SCHOLARS.filter(s=>s.focus===p.key);
+  const chips=scholars.map(s=>`
+    <div class="scholar-chip">
+      <div class="sc-name">${s.name}</div>
+      <div class="sc-uni">${s.uni}</div>
+      <div class="sc-tags">${tagHtml(s.tags)}</div>
+      ${s.email||s.web?`<div style="margin-top:6px;font-size:0.73rem">${[s.email?`<a href="mailto:${s.email}">${s.email}</a>`:'',s.web?`<a href="${s.web}" target="_blank" rel="noopener">Profile</a>`:''].filter(Boolean).join(' · ')}</div>`:''}
+    </div>`).join('');
+  document.getElementById('phil-result').innerHTML=`
+    <p class="pr-heading">Researchers working on ${p.label} <span style="font-size:0.8rem;font-weight:400;color:var(--ink-muted)">(${scholars.length})</span></p>
+    ${scholars.length?`<div class="scholar-grid">${chips}</div>`:'<p style="color:var(--ink-faint);font-style:italic">No researchers listed yet.</p>'}
+  `;
+}
+
+/* Boot the default tab */
+window.addEventListener('load', initNetwork);
+</script>
+</body>
+</html>
