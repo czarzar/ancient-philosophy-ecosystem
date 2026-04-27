@@ -1,0 +1,2401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Researchers in Greek and Roman Philosophy · UK</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 18px; scroll-behavior: smooth; }
+
+:root {
+  --bg:         #f6f4ef;
+  --bg-card:    #ffffff;
+  --ink:        #1c1814;
+  --ink-mid:    #5a5550;
+  --ink-muted:  #8a857e;
+  --ink-faint:  #bbb5ad;
+  --border:     rgba(28,24,20,0.09);
+  --border-mid: rgba(28,24,20,0.18);
+  --accent:     #3d3480;
+  --accent-bg:  #eceaf6;
+  --tab-h:      52px;
+}
+
+body { background: var(--bg); color: var(--ink); font-family: 'DM Sans', sans-serif; font-weight: 400; min-height: 100vh; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── Header ── */
+header { background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 2.2rem 2rem 0; }
+.header-inner { max-width: 1140px; margin: 0 auto; }
+.eyebrow { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.5rem; }
+h1 { font-family: 'EB Garamond', Georgia, serif; font-size: clamp(1.7rem, 3.5vw, 2.6rem); font-weight: 400; line-height: 1.15; margin-bottom: 0.55rem; }
+h1 em { font-style: italic; color: var(--accent); }
+.tagline { font-size: 0.88rem; color: var(--ink-muted); max-width: 560px; line-height: 1.6; margin-bottom: 1.6rem; }
+
+/* ── Tabs ── */
+.tabs { display: flex; border-top: 1px solid var(--border); }
+.tab-btn {
+  font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 400;
+  color: var(--ink-muted); background: none; border: none;
+  border-top: 2px solid transparent; padding: 0 1.4rem;
+  height: var(--tab-h); cursor: pointer; transition: color 0.15s, border-color 0.15s;
+  white-space: nowrap; display: flex; align-items: center; gap: 7px;
+}
+.tab-btn:hover { color: var(--ink); }
+.tab-btn.active { color: var(--accent); border-top-color: var(--accent); font-weight: 500; }
+
+/* ── Layout ── */
+.panel-wrap { max-width: 1140px; margin: 0 auto; padding: 1.5rem 1.5rem 4rem; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+.card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; }
+
+/* ── Tags ── */
+.tag { display: inline-block; font-size: 0.72rem; font-weight: 500; border-radius: 20px; padding: 3px 10px; white-space: nowrap; }
+.tag-row { display: flex; flex-wrap: wrap; gap: 5px; }
+
+/* ── Researcher photo avatar ── */
+.r-avatar {
+  width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0;
+  overflow: hidden; background: var(--bg); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+}
+.r-avatar img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+.r-avatar-initials { font-size: 1rem; font-weight: 500; color: var(--ink-faint); }
+
+/* Large avatar used in side panels */
+.r-avatar-lg {
+  width: 68px; height: 68px; border-radius: 50%; flex-shrink: 0;
+  overflow: hidden; background: var(--bg); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center; margin-bottom: 12px;
+}
+.r-avatar-lg img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+.r-avatar-lg-initials { font-size: 1.3rem; font-weight: 500; color: var(--ink-faint); }
+
+/* ── Shared researcher detail styles ── */
+.rc-focus   { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 3px; }
+.rc-name    { font-family: 'EB Garamond', serif; font-size: 1.25rem; color: var(--ink); margin-bottom: 1px; line-height: 1.2; }
+.rc-pos     { font-size: 0.82rem; font-weight: 500; color: var(--ink-mid); margin-bottom: 1px; }
+.rc-dept    { font-size: 0.78rem; color: var(--ink-muted); margin-bottom: 10px; }
+.rc-links   { font-size: 0.76rem; margin-bottom: 12px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.rc-section { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); margin: 11px 0 6px; }
+.rc-divider { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
+.conn-item  { padding: 7px 0; border-top: 1px solid var(--border); }
+.conn-item:first-child { border-top: none; }
+.conn-name   { font-size: 0.85rem; font-weight: 500; color: var(--ink); }
+.conn-detail { font-size: 0.74rem; color: var(--ink-muted); margin-top: 1px; }
+.panel-empty { font-family: 'EB Garamond', serif; font-style: italic; font-size: 1rem; color: var(--ink-faint); line-height: 1.6; }
+
+/* =========================================================
+   VIEW 1 — BROWSE BY SPECIALISM
+   ========================================================= */
+.view-intro { font-size: 0.85rem; color: var(--ink-muted); margin-bottom: 1.2rem; line-height: 1.5; }
+.phil-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; margin-bottom: 1.2rem; }
+
+.phil-card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+  padding: 1rem 0.9rem; text-align: center; cursor: pointer; transition: border-color 0.13s;
+}
+.phil-card:hover { border-color: var(--border-mid); }
+.phil-card.active { border: 2px solid var(--accent); background: var(--accent-bg); }
+.phil-img-wrap {
+  width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 10px;
+  overflow: hidden; background: var(--bg); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+}
+.phil-img-wrap img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+.phil-name  { font-family: 'EB Garamond', serif; font-size: 1.05rem; color: var(--ink); }
+.phil-dates { font-size: 0.72rem; color: var(--ink-muted); margin-top: 2px; }
+.phil-blurb { font-size: 0.7rem; color: var(--ink-faint); margin-top: 3px; font-style: italic; }
+.phil-count { font-size: 0.72rem; font-weight: 500; color: var(--accent); margin-top: 5px; }
+
+.sub-filter-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 1rem; }
+.sub-label { font-size: 0.72rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-muted); margin-right: 2px; flex-shrink: 0; }
+.sub-btn {
+  font-family: 'DM Sans', sans-serif; font-size: 0.76rem;
+  background: var(--bg-card); border: 1px solid var(--border-mid);
+  border-radius: 20px; padding: 4px 12px; color: var(--ink-muted); cursor: pointer; transition: all 0.12s;
+}
+.sub-btn:hover { color: var(--ink); border-color: var(--ink); }
+.sub-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 500; }
+
+.phil-result { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.4rem; min-height: 120px; }
+.pr-heading { font-family: 'EB Garamond', serif; font-size: 1.15rem; color: var(--ink); margin-bottom: 1rem; }
+.scholar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 9px; }
+
+/* Scholar chip in browse-by-specialism grid */
+.scholar-chip { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 11px 13px; }
+.chip-top { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+.chip-text { min-width: 0; }
+.sc-name  { font-size: 0.9rem; font-weight: 500; color: var(--ink); }
+.sc-pos   { font-size: 0.76rem; font-weight: 500; color: var(--ink-mid); margin-top: 1px; }
+.sc-dept  { font-size: 0.74rem; color: var(--ink-muted); margin-bottom: 7px; }
+.sc-links { font-size: 0.72rem; margin-bottom: 7px; display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
+.sc-tags  { display: flex; flex-wrap: wrap; gap: 4px; }
+
+/* =========================================================
+   VIEW 2 — BROWSE BY INSTITUTION (MAP)
+   ========================================================= */
+.map-layout { display: grid; grid-template-columns: 1fr 310px; gap: 1rem; align-items: start; }
+@media (max-width: 760px) { .map-layout { grid-template-columns: 1fr; } }
+#mapF { height: 490px; border-radius: 12px; border: 1px solid var(--border); }
+.map-panel { border-radius: 12px; padding: 1.25rem; position: sticky; top: 1rem; max-height: 82vh; overflow-y: auto; }
+.map-r-item { padding: 10px 0; border-top: 1px solid var(--border); }
+.map-r-item:first-child { border-top: none; }
+.map-r-top { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 6px; }
+.map-r-text { min-width: 0; }
+
+/* Institution tabs inside map panel (used for multi-institution cities like London) */
+.map-inst-tabs {
+  display: flex; flex-wrap: wrap; gap: 5px;
+  margin-bottom: 14px; padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.map-inst-tab {
+  font-family: 'DM Sans', sans-serif; font-size: 0.74rem; font-weight: 400;
+  background: var(--bg); border: 1px solid var(--border-mid);
+  border-radius: 20px; padding: 4px 11px;
+  color: var(--ink-muted); cursor: pointer; transition: all 0.12s;
+  white-space: nowrap;
+}
+.map-inst-tab:hover { color: var(--ink); border-color: var(--ink); }
+.map-inst-tab.active {
+  background: var(--accent); border-color: var(--accent);
+  color: #fff; font-weight: 500;
+}
+
+/* =========================================================
+   VIEW 3 — RESEARCH NETWORK
+   ========================================================= */
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; margin-bottom: 1rem; }
+.toolbar-label { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-muted); margin-right: 4px; }
+.filter-btn {
+  font-family: 'DM Sans', sans-serif; font-size: 0.78rem;
+  background: var(--bg-card); border: 1px solid var(--border-mid);
+  border-radius: 20px; padding: 5px 13px; color: var(--ink-muted); cursor: pointer; transition: all 0.13s;
+}
+.filter-btn:hover { color: var(--ink); border-color: var(--ink); }
+.filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 500; }
+.net-layout { display: grid; grid-template-columns: 1fr 320px; gap: 1rem; align-items: start; }
+@media (max-width: 760px) { .net-layout { grid-template-columns: 1fr; } }
+.canvas-outer { overflow: hidden; border-radius: 12px; }
+canvas#net { display: block; width: 100%; cursor: grab; border-radius: 12px; }
+canvas#net:active { cursor: grabbing; }
+.canvas-foot { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 9px 14px; border-top: 1px solid var(--border); background: var(--bg); border-radius: 0 0 12px 12px; }
+.leg-item { display: flex; align-items: center; gap: 5px; font-size: 0.72rem; color: var(--ink-muted); }
+.leg-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.net-panel { border-radius: 12px; padding: 1.2rem; position: sticky; top: 1rem; max-height: 82vh; overflow-y: auto; }
+
+/* ── Submit tab accent colour ── */
+.tab-btn-submit { margin-left: auto; }
+.tab-btn-submit.active { color: #8a4218; border-top-color: #8a4218; }
+
+/* ── Footer ── */
+footer {
+  text-align: center;
+  padding: 1.8rem 2rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+  line-height: 1.5;
+}
+
+/* =========================================================
+   VIEW 4 — SUBMIT YOUR PROFILE
+   ========================================================= */
+.submit-layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+@media (max-width: 760px) { .submit-layout { grid-template-columns: 1fr; } }
+
+.submit-heading {
+  font-family: 'EB Garamond', serif;
+  font-size: 1.5rem; font-weight: 400;
+  color: var(--ink); margin-bottom: 0.9rem;
+}
+.submit-body {
+  font-size: 0.88rem; color: var(--ink-muted);
+  line-height: 1.65; margin-bottom: 0.85rem;
+}
+.req-star { color: #8a4218; font-weight: 600; }
+.submit-note {
+  background: var(--accent-bg); border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0; padding: 12px 14px;
+  font-size: 0.82rem; color: var(--ink-mid); line-height: 1.6;
+  margin-top: 1.2rem;
+}
+
+/* Form column */
+.submit-form-col {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.8rem 2rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.1rem 1.4rem;
+}
+@media (max-width: 580px) { .form-grid { grid-template-columns: 1fr; } }
+
+.form-field { display: flex; flex-direction: column; gap: 5px; }
+.form-field--full { grid-column: 1 / -1; }
+
+.form-label {
+  font-size: 0.78rem; font-weight: 500;
+  color: var(--ink-mid); letter-spacing: 0.01em;
+}
+.form-input {
+  font-family: 'DM Sans', sans-serif; font-size: 0.86rem;
+  color: var(--ink); background: var(--bg);
+  border: 1px solid var(--border-mid); border-radius: 8px;
+  padding: 8px 11px; transition: border-color 0.15s, box-shadow 0.15s;
+  width: 100%; outline: none;
+}
+.form-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(61,52,128,0.1);
+  background: var(--bg-card);
+}
+.form-input.invalid { border-color: #c0392b; box-shadow: 0 0 0 3px rgba(192,57,43,0.1); }
+.form-textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+
+.form-hint { font-size: 0.72rem; color: var(--ink-faint); line-height: 1.4; }
+.form-err  { font-size: 0.72rem; color: #c0392b; min-height: 1em; }
+
+.form-footer {
+  display: flex; align-items: center; gap: 1rem;
+  margin-top: 1.6rem; padding-top: 1.2rem;
+  border-top: 1px solid var(--border);
+}
+.form-submit-btn {
+  font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 500;
+  background: var(--accent); color: #fff; border: none; border-radius: 8px;
+  padding: 10px 24px; cursor: pointer; transition: background 0.15s, opacity 0.15s;
+  flex-shrink: 0;
+}
+.form-submit-btn:hover { background: #2e2666; }
+.form-submit-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.form-status { font-size: 0.82rem; color: var(--ink-muted); }
+
+/* Success state */
+.form-success {
+  text-align: center; padding: 3rem 2rem;
+}
+.form-success-icon {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: #e2f2ea; color: #1a6b52;
+  font-size: 1.5rem; display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 1rem;
+}
+.form-success-heading {
+  font-family: 'EB Garamond', serif; font-size: 1.4rem;
+  font-weight: 400; color: var(--ink); margin-bottom: 0.6rem;
+}
+.form-success-body {
+  font-size: 0.88rem; color: var(--ink-muted); line-height: 1.6;
+  max-width: 360px; margin: 0 auto 1.4rem;
+}
+.form-reset-btn {
+  font-family: 'DM Sans', sans-serif; font-size: 0.82rem;
+  background: none; border: 1px solid var(--border-mid);
+  border-radius: 20px; padding: 6px 16px; color: var(--ink-muted);
+  cursor: pointer; transition: all 0.13s;
+}
+.form-reset-btn:hover { color: var(--ink); border-color: var(--ink); }
+
+/* ── Photo upload field ── */
+.photo-upload-area {
+  border: 2px dashed var(--border-mid); border-radius: 10px;
+  padding: 1.1rem 1rem; text-align: center; cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  background: var(--bg); position: relative;
+}
+.photo-upload-area:hover { border-color: var(--accent); background: var(--accent-bg); }
+.photo-upload-area.dragging { border-color: var(--accent); background: var(--accent-bg); }
+.photo-upload-area.has-preview { padding: 0; border-style: solid; border-color: var(--border-mid); overflow: hidden; }
+.photo-upload-input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+.photo-upload-icon { font-size: 1.4rem; margin-bottom: 6px; color: var(--ink-faint); }
+.photo-upload-label { font-size: 0.8rem; color: var(--ink-muted); line-height: 1.4; }
+.photo-upload-label strong { color: var(--accent); }
+.photo-preview-wrap { position: relative; }
+.photo-preview-img { width: 100%; height: 140px; object-fit: cover; object-position: center top; display: block; }
+.photo-preview-remove {
+  position: absolute; top: 6px; right: 6px;
+  background: rgba(28,24,20,0.7); color: #fff; border: none; border-radius: 20px;
+  font-size: 0.72rem; padding: 3px 9px; cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+}
+.photo-upload-status { font-size: 0.74rem; color: var(--ink-muted); margin-top: 5px; min-height: 1.1em; }
+.photo-upload-status.uploading { color: var(--accent); }
+.photo-upload-status.error     { color: #c0392b; }
+.photo-upload-status.success   { color: #1a6b52; }
+
+/* ══════════════════════════════════════
+   MODAL — Option A: centred overlay
+   ══════════════════════════════════════ */
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(20,16,12,0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 1.5rem;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.22s ease;
+}
+.modal-backdrop.open { opacity: 1; pointer-events: all; }
+
+.modal-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  width: 100%; max-width: 560px;
+  max-height: 90vh; overflow-y: auto;
+  transform: translateY(18px) scale(0.97);
+  transition: transform 0.24s ease;
+  position: relative;
+}
+.modal-backdrop.open .modal-box { transform: translateY(0) scale(1); }
+
+.modal-close {
+  position: absolute; top: 14px; right: 16px;
+  background: var(--bg); border: 1px solid var(--border-mid);
+  border-radius: 50%; width: 30px; height: 30px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; color: var(--ink-muted); cursor: pointer;
+  transition: background 0.13s, color 0.13s; line-height: 1;
+  z-index: 2;
+}
+.modal-close:hover { background: var(--border); color: var(--ink); }
+
+.modal-header {
+  display: flex; align-items: flex-start; gap: 1rem;
+  padding: 1.6rem 1.6rem 1.2rem;
+  border-bottom: 1px solid var(--border);
+}
+.modal-avatar-lg {
+  width: 80px; height: 80px; border-radius: 50%; flex-shrink: 0;
+  overflow: hidden; background: var(--bg); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+}
+.modal-avatar-lg img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+.modal-avatar-lg-initials { font-size: 1.6rem; font-weight: 500; color: var(--ink-faint); }
+.modal-header-text { min-width: 0; padding-top: 4px; }
+.modal-focus  { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 3px; }
+.modal-name   { font-family: 'EB Garamond', serif; font-size: 1.6rem; color: var(--ink); line-height: 1.15; margin-bottom: 3px; }
+.modal-pos    { font-size: 0.88rem; font-weight: 500; color: var(--ink-mid); margin-bottom: 2px; }
+.modal-dept   { font-size: 0.82rem; color: var(--ink-muted); line-height: 1.4; }
+
+.modal-body { padding: 1.4rem 1.6rem; }
+.modal-section-label {
+  font-size: 0.68rem; font-weight: 500; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ink-faint); margin-bottom: 8px;
+}
+.modal-tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1.2rem; }
+.modal-tag { display: inline-block; font-size: 0.78rem; font-weight: 500; border-radius: 20px; padding: 4px 12px; white-space: nowrap; }
+.modal-links { display: flex; flex-wrap: wrap; gap: 8px; }
+.modal-link-btn {
+  font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 500;
+  color: var(--accent); background: var(--accent-bg);
+  border: 1px solid rgba(61,52,128,0.2); border-radius: 20px;
+  padding: 5px 14px; text-decoration: none; transition: background 0.13s;
+  display: inline-flex; align-items: center; gap: 5px;
+}
+.modal-link-btn:hover { background: rgba(61,52,128,0.15); text-decoration: none; }
+.modal-link-btn svg { width: 12px; height: 12px; flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════
+     DATA — edit this <script> block to manage researchers.
+
+     Each SCHOLARS entry:
+       name       Full name
+       uni        University / institution
+       dept       Department or faculty
+       city       Must match a key in UNI_COORDS
+       position   Job title
+       focus      Must match a key in PHILOSOPHERS
+       ancients   Specific ancient philosophers/schools (appear as tags)
+       tags       Research themes — controls network edges:
+                  'metaphysics'|'ethics'|'epistemology'|'mind'|'politics'|'language'
+       email      Contact email or ''
+       web        Personal website URL or ''
+       links      Array of {label, url} for additional profile links (optional)
+       photo      URL to researcher photo, or '' to show initials avatar
+     ════════════════════════════════════════════════════════════ -->
+<script type="text/javascript">
+const SCHOLARS = [
+  /* ── Cambridge ───────────────────────────────────────── */
+  {
+    name: 'Cristóbal Zarzar',
+    uni: 'University of Cambridge', dept: 'Faculty of Classics',
+    city: 'Cambridge', position: 'Postdoctoral Research Fellow',
+    focus: 'Hellenistic', ancients: ['Stoicism', 'Academic Scepticism', 'Epicureanism'],
+    tags: ['epistemology', 'mind', 'ethics'],
+    email: 'cz298@cam.ac.uk',
+    web: 'https://czarzar.com',
+    links: [
+      { label: 'Faculty page', url: 'https://www.classics.cam.ac.uk/staff/dr-cristobal-zarzar' },
+      { label: 'College page', url: 'https://www.clarehall.cam.ac.uk/directory/cristobal-zarzar/' },
+    , { label: 'orcid', url: 'https://orcid.org/0009-0007-2303-2434' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777298049/cristobal-zarzar.jpg',
+  },
+  {
+    name: 'David M. Douglas',
+    uni: 'University of Cambridge', dept: 'Faculty of Classics',
+    city: 'Cambridge', position: 'Research Fellow',
+    focus: 'Hellenistic', ancients: ['Epicureanism', 'Philodemus of Gadara'],
+    tags: ['ethics', 'epistemology', 'language'],
+    email: 'dmd48@cam.ac.uk',
+    web: '',
+    links: [
+      { label: 'Faculty page', url: 'https://www.classics.cam.ac.uk/staff/david-m-douglas' },
+      { label: 'College page', url: 'https://www.emma.cam.ac.uk/people/dr-david-douglas' },
+    ],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777030653/david-douglas.jpg',
+  },
+
+  /* ── Cambridge (additional) ───────────────────────────── */
+  {
+    name: 'Chiara Martini',
+    uni: 'University of Cambridge', dept: 'Faculty of Classics',
+    city: 'Cambridge', position: 'Early Career Research Fellow in Philosophy',
+    focus: 'Aristotle', ancients: ['Aristotle'],
+    tags: ['metaphysics', 'mind'],
+    email: 'cm2266@cam.ac.uk',
+    web: 'https://chiaramartini.eu',
+    links: [
+      { label: 'Faculty page', url: 'https://www.classics.cam.ac.uk/staff/dr-chiara-martini-0' },
+      { label: 'College page', url: 'https://www.corpus.cam.ac.uk/people/dr-chiara-martini' },
+    , { label: 'orcid', url: 'https://orcid.org/0000-0002-8785-4521' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777030280/chiara-martini.jpg',
+  },
+  {
+    name: 'Lea Cantor',
+    uni: 'University of Cambridge', dept: 'Faculty of Classics',
+    city: 'Cambridge', position: 'Blacker Loewe Research Fellow in Philosophy',
+    focus: 'Pre-Socratics', ancients: ['Parmenides', 'Pyrrhonian Scepticism'],
+    tags: ['epistemology', 'metaphysics'],
+    email: 'lc840@cam.ac.uk',
+    web: 'https://leacantor.com/index.html',
+    links: [
+      { label: 'Faculty page', url: 'https://www.classics.cam.ac.uk/staff/dr-lea-cantor' },
+      { label: 'College page', url: 'https://www.pet.cam.ac.uk/person/cantor' },
+    , { label: 'orcid', url: 'https://orcid.org/0000-0003-3139-2839' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777030280/lea-cantor.jpg',
+  },
+  {
+    name: 'Christian Keime',
+    uni: 'University of Cambridge', dept: 'Faculty of Classics',
+    city: 'Cambridge', position: 'Research\ Associate',
+    focus: 'Plato', ancients: ['Plato', 'Socrates'],
+    tags: ['epistemology', 'ethics', 'metaphysics'],
+    email: 'ck643@cam.ac.uk',
+    web: '',
+    links: [
+      { label: 'Faculty page', url: 'https://www.classics.cam.ac.uk/directory/dr-christian-keime' },
+    ],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777030281/christian-keime.png',
+  },
+  {
+    name: 'James Warren',
+    uni: 'University of Cambridge', dept: 'Faculty of Classics',
+    city: 'Cambridge', position: 'Professor\ of\ Greek\ and\ Roman\ Philosophy',
+    focus: 'Hellenistic', ancients: ['Epicureanism'],
+    tags: ['ethics', 'epistemology', 'mind'],
+    email: 'jiw1001@cam.ac.uk',
+    web: '',
+    links: [
+      { label: 'Faculty page', url: 'https://www.classics.cam.ac.uk/directory/james-warren' },
+      { label: 'College page', url: 'https://www.corpus.cam.ac.uk/people/professor-james-warren' },
+    , { label: 'orcid', url: 'https://orcid.org/0000-0001-6197-9687' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777030281/james-warren.jpg',
+  },
+  {
+    name: 'Laura M. Castelli',
+    uni: 'University of Cambridge', dept: 'Faculty of Classics',
+    city: 'Cambridge', position: 'Associate Professor in Classics (Greek and Roman Philosophy)',
+    focus: 'Aristotle', ancients: ['Aristotle', 'Alexander of Aphrodisias'],
+    tags: ['metaphysics', 'language', 'epistemology'],
+    email: 'lc918@cam.ac.uk',
+    web: 'https://lauramcastelli.com/',
+    links: [
+      { label: 'Faculty page', url: 'https://www.classics.cam.ac.uk/staff/dr-laura-m-castelli-0' },
+      { label: 'College page', url: 'https://www.clarehall.cam.ac.uk/directory/castelli/' },
+    ],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777030279/laura-castelli.jpg',
+  },
+  {
+    name: 'Gábor Betegh',
+    uni: 'University of Cambridge', dept: 'Faculty of Classics',
+    city: 'Cambridge', position: 'Laurence\ Professor\ of\ Greek\ and\ Roman\ Philosophy',
+    focus: 'Pre-Socratics', ancients: ['Heraclitus', 'Parmenides', 'Democritus'],
+    tags: ['metaphysics', 'epistemology'],
+    email: 'gb230@cam.ac.uk',
+    web: '',
+    links: [
+      { label: 'Faculty page', url: 'https://www.classics.cam.ac.uk/directory/professor-gabor-betegh' },
+      { label: 'College page', url: 'https://www.christs.cam.ac.uk/college/people/fellows/professor-gabor-betegh' },
+    ],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777030279/gabor-betegh.jpg',
+  },
+  {
+    name: 'Myrto Hatzimichali',
+    uni: 'University of Cambridge', dept: 'Faculty of Classics',
+    city: 'Cambridge', position: 'Senior\ Lecturer\ in\ Classics',
+    focus: 'Aristotle', ancients: ['Aristotle', 'Alexander of Aphrodisias'],
+    tags: ['metaphysics', 'language', 'mind'],
+    email: 'mh303@cam.ac.uk',
+    web: '',
+    links: [
+      { label: 'Faculty page', url: 'https://www.classics.cam.ac.uk/directory/myrto-hatzimichali' },
+      { label: 'College page', url: 'https://www.homerton.cam.ac.uk/people/myrto-hatzimichali' },
+    ],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777030278/myrto-hatzimichali.jpg',
+  },
+  {
+    name: 'Frisbee C.C. Sheffield',
+    uni: 'University of Cambridge', dept: 'Faculty of Classics',
+    city: 'Cambridge', position: 'Associate Professor of Classics',
+    focus: 'Plato', ancients: ['Plato', 'Socrates'],
+    tags: ['ethics', 'mind', 'metaphysics'],
+    email: 'fccs2@cam.ac.uk',
+    web: '',
+    links: [
+      { label: 'Faculty page', url: 'https://www.classics.cam.ac.uk/directory/dr-frisbee-c-c-sheffield' },
+      { label: 'College page', url: 'https://www.dow.cam.ac.uk/people/dr-frisbee-sheffield' },
+    ],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777030278/frisbee-sheffield.jpg',
+  },
+
+  /* ── UCL ──────────────────────────────────────────────── */
+  {
+    name: 'Fiona Leigh',
+    uni: 'University College London', dept: 'Department of Philosophy',
+    city: 'London', position: 'Professor of Ancient Greek Philosophy',
+    focus: 'Plato', ancients: ['Plato', 'Socrates'],
+    tags: ['metaphysics', 'epistemology', 'mind'],
+    email: 'fiona.leigh@ucl.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://profiles.ucl.ac.uk/4084-fiona-leigh' }, { label: 'orcid', url: 'https://orcid.org/0000-0002-0052-3763' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291680/fiona-leigh.jpg',
+  },
+  {
+    name: 'Mark Eli Kalderon',
+    uni: 'University College London', dept: 'Department of Philosophy',
+    city: 'London', position: 'Professor of Philosophy',
+    focus: 'Aristotle', ancients: ['Aristotle', 'Empedocles'],
+    tags: ['metaphysics', 'mind', 'epistemology'],
+    email: 'm.kalderon@ucl.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://profiles.ucl.ac.uk/6364-mark-kalderon' }, { label: 'orcid', url: 'https://orcid.org/0000-0001-9668-6577' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291681/mark-kalderon.jpg',
+  },
+  {
+    name: 'Andrew Gregory',
+    uni: 'University College London', dept: 'Department of Science and Technology Studies',
+    city: 'London', position: 'Professor of History and Philosophy of Science',
+    focus: 'Pre-Socratics', ancients: ['Heraclitus', 'Parmenides', 'Anaximander'],
+    tags: ['metaphysics', 'epistemology'],
+    email: 'andrew.gregory@ucl.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://profiles.ucl.ac.uk/4876-andrew-gregory' }, { label: 'orcid', url: 'https://orcid.org/0000-0001-8228-7997' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291682/andrew-gregory.png',
+  },
+  {
+    name: 'Elena Cagnoli Fiecconi',
+    uni: 'University College London', dept: 'Department of Greek and Latin',
+    city: 'London', position: 'Associate Professor in Greek and Roman Philosophy',
+    focus: 'Aristotle', ancients: ['Aristotle'],
+    tags: ['ethics', 'mind'],
+    email: 'e.fiecconi@ucl.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://profiles.ucl.ac.uk/30436-elena-cagnoli-fiecconi' }, { label: 'orcid', url: 'https://orcid.org/0000-0002-0176-8236' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291682/elena-cagnoli-fiecconi.jpg',
+  },
+  {
+    name: 'Simona Aimar',
+    uni: 'University College London', dept: 'Department of Philosophy',
+    city: 'London', position: 'Lecturer in Philosophy',
+    focus: 'Aristotle', ancients: ['Aristotle'],
+    tags: ['metaphysics', 'language'],
+    email: 's.aimar@ucl.ac.uk', web: 'https://www.simonaimar.com',
+    links: [{ label: 'Faculty page', url: 'https://profiles.ucl.ac.uk/44585-simona-aimar' }, { label: 'orcid', url: 'https://orcid.org/0000-0003-2907-9325' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291683/simona-aimar.png',
+  },
+  {
+    name: 'Michael McOsker',
+    uni: 'University College London', dept: 'Department of Greek and Latin',
+    city: 'London', position: 'Researcher in Papyrology',
+    focus: 'Hellenistic', ancients: ['Epicureanism', 'Philodemus of Gadara'],
+    tags: ['language', 'epistemology'],
+    email: 'm.mcosker@ucl.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://profiles.ucl.ac.uk/97051-michael-mcosker/about' }, { label: 'orcid', url: 'https://orcid.org/0000-0002-6048-7637' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291684/michael-mcosker.jpg',
+  },
+
+  /* ── KCL ──────────────────────────────────────────────── */
+  {
+    name: 'Peter Adamson',
+    uni: "King's College London", dept: 'Department of Philosophy',
+    city: 'London', position: 'Professor of Ancient and Medieval Philosophy',
+    focus: 'Hellenistic', ancients: ['Neoplatonism', 'Stoicism'],
+    tags: ['metaphysics', 'mind'],
+    email: 'peter.adamson@kcl.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://www.kcl.ac.uk/people/peter-adamson' }, { label: 'orcid', url: 'https://orcid.org/0000-0001-9256-2366' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291684/peter-adamson.jpg',
+  },
+  {
+    name: 'Joachim Aufderheide',
+    uni: "King's College London", dept: 'Department of Philosophy',
+    city: 'London', position: 'Reader in Philosophy',
+    focus: 'Aristotle', ancients: ['Aristotle', 'Plato'],
+    tags: ['ethics', 'metaphysics'],
+    email: 'joachim.aufderheide@kcl.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://www.kcl.ac.uk/people/joachim-aufderheide' }, { label: 'orcid', url: 'https://orcid.org/0000-0001-7080-4256' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291685/joachim-aufderheide.jpg',
+  },
+  {
+    name: 'Shaul Tor',
+    uni: "King's College London", dept: 'Departments of Classics and Philosophy',
+    city: 'London', position: 'Reader in Greek and Roman Philosophy',
+    focus: 'Pre-Socratics', ancients: ['Heraclitus', 'Parmenides', 'Xenophanes'],
+    tags: ['epistemology', 'metaphysics'],
+    email: 'shaul.tor@kcl.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://www.kcl.ac.uk/people/shaul-tor' }, { label: 'orcid', url: 'https://orcid.org/0000-0002-7229-092X' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291686/shaul-tor.jpg',
+  },
+
+  /* ── Royal Holloway ───────────────────────────────────── */
+  {
+    name: 'Elizabeth Gloyn',
+    uni: 'Royal Holloway, University of London', dept: 'Department of Classics',
+    city: 'London', position: 'Reader in Latin Language and Literature',
+    focus: 'Hellenistic', ancients: ['Stoicism'],
+    tags: ['ethics', 'politics'],
+    email: 'Liz.Gloyn@rhl.ac.uk',
+    web: '',
+    links: [{ label: 'Faculty page', url: 'https://pure.royalholloway.ac.uk/en/persons/elizabeth-gloyn/' }, { label: 'orcid', url: 'https://orcid.org/0000-0002-6914-6687' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777298050/elizabeth-gloyn.jpg',
+  },
+  {
+    name: 'John Sellars',
+    uni: 'Royal Holloway, University of London', dept: 'Department of Philosophy',
+    city: 'London', position: 'Reader in History of Philosophy',
+    focus: 'Hellenistic', ancients: ['Stoicism', 'Epicureanism'],
+    tags: ['ethics', 'metaphysics'],
+    email: 'John.Sellars@rhl.ac.uk', web: 'http://www.johnsellars.org.uk',
+    links: [{ label: 'Faculty page', url: 'https://pure.royalholloway.ac.uk/portal/en/persons/john-sellars(709b3ed0-efe1-45cc-923f-9d180a42fb9a).html' }, { label: 'orcid', url: 'https://orcid.org/0000-0002-2041-8549' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291688/john-sellars.jpg',
+  },
+  {
+    name: 'David Preston',
+    uni: 'Royal Holloway, University of London', dept: 'Department of Politics, International Relations and Philosophy',
+    city: 'London', position: 'Lecturer in Philosophy',
+    focus: 'Pre-Socratics', ancients: ['Socrates', 'Empedocles'],
+    tags: ['ethics', 'epistemology'],
+    email: 'Dave.Preston@rhl.ac.uk',
+    web: '',
+    links: [{ label: 'Faculty page', url: 'https://pure.royalholloway.ac.uk/en/persons/david-preston/' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777298051/david-preston.jpg',
+  },
+
+  /* ── Oxford ───────────────────────────────────────────── */
+  {
+    name: 'Alexander Bown',
+    uni: 'University of Oxford', dept: 'Faculty of Philosophy',
+    city: 'Oxford', position: 'Associate\ Professor\ of\ Ancient\ Philosophy',
+    focus: 'Hellenistic', ancients: ['Stoicism', 'Academic Scepticism'],
+    tags: ['epistemology', 'language', 'metaphysics'],
+    email: 'alexander.bown@philosophy.ox.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://onap.web.ox.ac.uk/people/alexander-bown' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291688/alexander-bown.jpg',
+  },
+  {
+    name: 'Luca Castagnoli',
+    uni: 'University of Oxford', dept: 'Faculty of Philosophy',
+    city: 'Oxford', position: 'Associate\ Professor\ of\ Ancient\ Greek\ Philosophy',
+    focus: 'Hellenistic', ancients: ['Pyrrhonian Scepticism', 'Academic Scepticism'],
+    tags: ['epistemology', 'language'],
+    email: 'luca.castagnoli@philosophy.ox.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://onap.web.ox.ac.uk/people/luca-castagnoli' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291690/luca-castagnoli.jpg',
+  },
+  {
+    name: 'Ursula Coope',
+    uni: 'University of Oxford', dept: 'Faculty of Philosophy',
+    city: 'Oxford', position: 'Professor\ of\ Ancient\ Philosophy',
+    focus: 'Aristotle', ancients: ['Aristotle'],
+    tags: ['metaphysics', 'mind', 'ethics'],
+    email: 'ursula.coope@philosophy.ox.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://onap.web.ox.ac.uk/people/ursula-coope' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291692/ursula-coope.jpg',
+  },
+  {
+    name: 'Lindsay Judson',
+    uni: 'University of Oxford', dept: 'Faculty of Philosophy',
+    city: 'Oxford', position: 'Professor\ of\ Ancient\ Philosophy',
+    focus: 'Aristotle', ancients: ['Aristotle', 'Plato'],
+    tags: ['metaphysics', 'epistemology'],
+    email: 'lindsay.judson@philosophy.ox.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://onap.web.ox.ac.uk/people/lindsay-judson' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291693/lindsay-judson.jpg',
+  },
+  {
+    name: 'Paolo Fait',
+    uni: 'University of Oxford', dept: 'Faculty of Philosophy',
+    city: 'Oxford', position: 'Anthony Quinton Fellow; Tutor in Classical Philosophy',
+    focus: 'Aristotle', ancients: ['Aristotle'],
+    tags: ['metaphysics', 'language', 'epistemology'],
+    email: 'paolo.fait@philosophy.ox.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://onap.web.ox.ac.uk/people/paolo-fait' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291694/paolo-fait.jpg',
+  },
+  {
+    name: 'Marion Durand',
+    uni: 'University of Oxford', dept: 'Faculty of Philosophy',
+    city: 'Oxford', position: 'Associate\ Professor\ of\ Ancient\ Philosophy',
+    focus: 'Hellenistic', ancients: ['Stoicism'],
+    tags: ['language', 'epistemology'],
+    email: 'marion.durand@philosophy.ox.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://onap.web.ox.ac.uk/people/marion-durand' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291695/marion-durand.jpg',
+  },
+  {
+    name: 'Roger Crisp',
+    uni: 'University of Oxford', dept: 'Faculty of Philosophy',
+    city: 'Oxford', position: 'Professor of Moral Philosophy',
+    focus: 'Aristotle', ancients: ['Aristotle', 'Plato'],
+    tags: ['ethics', 'politics'],
+    email: 'roger.crisp@st-annes.ox.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://onap.web.ox.ac.uk/people/roger-crisp' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291696/roger-crisp.jpg',
+  },
+  {
+    name: 'Karen Margrethe Nielsen',
+    uni: 'University of Oxford', dept: 'Faculty of Philosophy',
+    city: 'Oxford', position: 'Professor of Ancient Greek and Roman Philosophy',
+    focus: 'Aristotle', ancients: ['Aristotle', 'Plato'],
+    tags: ['ethics', 'mind', 'politics'],
+    email: 'karen.nielsen@some.ox.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://onap.web.ox.ac.uk/people/karen-margrethe-nielsen' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291696/karen-nielsen.jpg',
+  },
+  {
+    name: 'Michail Peramatzis',
+    uni: 'University of Oxford', dept: 'Faculty of Philosophy',
+    city: 'Oxford', position: 'Hinton Clarendon Fellow in Philosophy',
+    focus: 'Aristotle', ancients: ['Aristotle', 'Plato'],
+    tags: ['metaphysics', 'epistemology'],
+    email: 'michail.peramatzis@philosophy.ox.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://onap.web.ox.ac.uk/people/michail-peramatzis' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291697/michail-peramatzis.jpg',
+  },
+  {
+    name: 'Tobias Reinhardt',
+    uni: 'University of Oxford', dept: 'Faculty of Classics',
+    city: 'Oxford', position: 'Corpus Christi Professor of the Latin Language and Literature',
+    focus: 'Hellenistic', ancients: ['Stoicism', 'Academic Scepticism'],
+    tags: ['epistemology', 'language'],
+    email: 'tobias.reinhardt@classics.ox.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://onap.web.ox.ac.uk/people/tobias-reinhardt' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291698/tobias-reinhardt.jpg',
+  },
+  {
+    name: 'Dominic Scott',
+    uni: 'University of Oxford', dept: 'Faculty of Philosophy',
+    city: 'Oxford', position: 'Professor of Philosophy',
+    focus: 'Plato', ancients: ['Plato', 'Aristotle'],
+    tags: ['ethics', 'epistemology', 'politics'],
+    email: 'dominic.scott@philosophy.ox.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://onap.web.ox.ac.uk/people/dominic-scott' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291699/dominic-scott.jpg',
+  },
+  {
+    name: 'Simon Shogry',
+    uni: 'University of Oxford', dept: 'Faculty of Philosophy',
+    city: 'Oxford', position: 'Associate Professor of Philosophy',
+    focus: 'Hellenistic', ancients: ['Stoicism'],
+    tags: ['epistemology', 'ethics', 'mind'],
+    email: 'simon.shogry@philosophy.ox.ac.uk', web: 'https://simonshogry.com',
+    links: [{ label: 'Faculty page', url: 'https://onap.web.ox.ac.uk/people/simon-shogry' }, { label: 'orcid', url: 'https://orcid.org/0000-0002-8054-8425' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291699/simon-shogry.jpg',
+  },
+  {
+    name: 'Stefan Sienkiewicz',
+    uni: 'University of Oxford', dept: 'Faculty of Philosophy',
+    city: 'Oxford', position: 'Departmental\ Lecturer\ in\ Ancient\ Philosophy',
+    focus: 'Hellenistic', ancients: ['Pyrrhonian Scepticism', 'Academic Scepticism'],
+    tags: ['epistemology'],
+    email: 'stefan.sienkiewicz@queens.ox.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://onap.web.ox.ac.uk/people/stefan-sienkiewicz' }, { label: 'orcid', url: 'https://orcid.org/0009-0008-8016-5927' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291700/stefan-sienkiewicz.jpg',
+  },
+  {
+    name: 'Ugo Zilioli',
+    uni: 'University of Oxford', dept: 'Faculty of Theology and Religion',
+    city: 'Oxford', position: 'Associate\ Faculty\ Member',
+    focus: 'Pre-Socratics', ancients: ['Protagoras', 'Pyrrhonian Scepticism'],
+    tags: ['metaphysics', 'epistemology'],
+    email: 'ugo.zilioli@theology.ox.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://www.theology.ox.ac.uk/people/ugo-zilioli' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291700/ugo-zilioli.jpg',
+  },
+
+  /* ── Nottingham ───────────────────────────────────────── */
+  {
+    name: 'Matthew Duncombe',
+    uni: 'University of Nottingham', dept: 'Department of Philosophy',
+    city: 'Nottingham', position: 'Associate Professor in Philosophy',
+    focus: 'Aristotle', ancients: ['Plato', 'Aristotle'],
+    tags: ['epistemology', 'language', 'metaphysics'],
+    email: 'matthew.duncombe@nottingham.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://www.nottingham.ac.uk/humanities/departments/philosophy/people/matthew.duncombe' }, { label: 'google-scholar', url: 'https://scholar.google.com/citations?user=HA__1KQAAAAJ&hl=en' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777298051/matthew-duncombe.jpg',
+  },
+
+  /* ── Edinburgh ────────────────────────────────────────── */
+  {
+    name: 'Benjamin Harriman',
+    uni: 'University of Edinburgh', dept: 'School of History, Classics and Archaeology',
+    city: 'Edinburgh', position: 'Lecturer in Greek Literature and Philosophy',
+    focus: 'Hellenistic', ancients: ['Stoicism', 'Pyrrhonian Scepticism'],
+    tags: ['metaphysics', 'mind', 'epistemology'],
+    email: 'Benjamin.Harriman@ed.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://edwebprofiles.ed.ac.uk/profile/benjamin-harriman' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777298052/benjamin-harriman.jpg',
+  },
+  {
+    name: 'Inna Kupreeva',
+    uni: 'University of Edinburgh', dept: 'School of Philosophy, Psychology and Language Sciences',
+    city: 'Edinburgh', position: 'Senior Lecturer in Philosophy',
+    focus: 'Aristotle', ancients: ['Aristotle', 'Alexander of Aphrodisias', 'Stoicism'],
+    tags: ['metaphysics', 'mind', 'epistemology'],
+    email: 'inna.kupreeva@ed.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://edwebprofiles.ed.ac.uk/profile/inna-kupreeva' }],
+    photo: '',
+  },
+  {
+    name: 'Simon Trépanier', dept: 'School of History, Classics and Archaeology',
+    city: 'Edinburgh', position: 'Senior Lecturer in Classics',
+    focus: 'Pre-Socratics', ancients: ['Empedocles', 'Parmenides'],
+    tags: ['metaphysics', 'epistemology'],
+    email: 'Simon.Trepanier@ed.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://edwebprofiles.ed.ac.uk/profile/simon-trepanier' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777298053/simon-trepanier.png',
+  },
+
+  /* ── Essex ────────────────────────────────────────────── */
+  {
+    name: 'Ellisif Wasmuth',
+    uni: 'University of Essex', dept: 'School of Philosophical, Historical and Interdisciplinary Studies',
+    city: 'Colchester', position: 'Lecturer in Philosophy',
+    focus: 'Plato', ancients: ['Plato', 'Socrates'],
+    tags: ['epistemology', 'mind'],
+    email: 'ellisif.wasmuth@essex.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://www.essex.ac.uk/people/WASMU56501/Ellisif-Wasmuth' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777298053/ellisif-wasmuth.jpg',
+  },
+
+  /* ── Kent ─────────────────────────────────────────────── */
+  {
+    name: 'Kelli Rudolph',
+    uni: 'University of Kent', dept: 'Department of Classical and Archaeological Studies',
+    city: 'Canterbury', position: 'Senior Lecturer in Classics and Philosophy',
+    focus: 'Pre-Socratics', ancients: ['Heraclitus', 'Democritus', 'Parmenides'],
+    tags: ['epistemology', 'metaphysics'],
+    email: 'k.c.rudolph@kent.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://www.kent.ac.uk/classics-archaeology/people/1741/rudolph-kelli' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291702/kelli-rudolph.jpg',
+  },
+
+  /* ── St Andrews ───────────────────────────────────────── */
+  {
+    name: 'Margaret Hampson',
+    uni: 'University of St Andrews', dept: 'Department of Philosophy',
+    city: 'St Andrews', position: 'Lecturer\ in\ Ancient\ Philosophy',
+    focus: 'Aristotle', ancients: ['Aristotle'],
+    tags: ['ethics', 'mind'],
+    email: 'mrh8@st-andrews.ac.uk', web: 'https://www.margarethampson.com',
+    links: [{ label: 'Faculty page', url: 'https://www.st-andrews.ac.uk/philosophy/people/mrh8/' }, { label: 'orcid', url: 'https://orcid.org/0000-0001-5097-6405' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777298054/margaret-hampson.jpg',
+  },
+  {
+    name: 'Alex Long',
+    uni: 'University of St Andrews', dept: 'School of Classics',
+    city: 'St Andrews', position: 'Professor\ of\ Classics',
+    focus: 'Plato', ancients: ['Plato', 'Stoicism'],
+    tags: ['ethics', 'epistemology', 'politics'],
+    email: 'agl10@st-andrews.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://www.st-andrews.ac.uk/classics/people/agl10/' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777298055/alex-long.jpg',
+  },
+
+  /* ── Durham ───────────────────────────────────────────── */
+  {
+    name: 'Phillip Horky',
+    uni: 'Durham University', dept: 'Department of Classics and Ancient History',
+    city: 'Durham', position: 'Professor of Greek and Roman Philosophy',
+    focus: 'Pre-Socratics', ancients: ['Parmenides', 'Democritus'],
+    tags: ['metaphysics', 'politics', 'epistemology'],
+    email: 'phillip.horky@durham.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://www.durham.ac.uk/staff/phillip-horky/' }, { label: 'orcid', url: 'https://orcid.org/0000-0003-3477-586X' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291703/phillip-horky.jpg',
+  },
+  {
+    name: 'Giulia Bonasio',
+    uni: 'Durham University', dept: 'Department of Classics and Ancient History',
+    city: 'Durham', position: 'Associate Professor in Greek and Roman Philosophy',
+    focus: 'Aristotle', ancients: ['Aristotle', 'Plato'],
+    tags: ['ethics', 'epistemology', 'mind'],
+    email: 'giulia.bonasio@durham.ac.uk', web: 'https://giuliabonasio.wordpress.com',
+    links: [{ label: 'Faculty page', url: 'https://www.durham.ac.uk/staff/giulia-bonasio/' }, { label: 'orcid', url: 'https://orcid.org/0000-0001-9125-5436' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291703/giulia-bonasio.jpg',
+  },
+  {
+    name: 'Nathan Gilbert',
+    uni: 'Durham University', dept: 'Department of Classics and Ancient History',
+    city: 'Durham', position: 'Associate Professor in Classics and Ancient History',
+    focus: 'Hellenistic', ancients: ['Epicureanism', 'Stoicism', 'Cicero'],
+    tags: ['ethics', 'politics'],
+    email: 'nathan.b.gilbert@durham.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://www.durham.ac.uk/staff/nathan-b-gilbert/' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291704/nathan-gilbert.jpg',
+  },
+
+  /* ── Southampton ──────────────────────────────────────── */
+  {
+    name: 'Bradford Jean-Hyuk Kim',
+    uni: 'University of Southampton', dept: 'Department of Philosophy',
+    city: 'Southampton', position: 'Lecturer in Philosophy',
+    focus: 'Aristotle', ancients: ['Aristotle'],
+    tags: ['ethics', 'politics'],
+    email: 'b.kim@soton.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://www.southampton.ac.uk/people/65djlr/doctor-bradford-kim' }, { label: 'orcid', url: 'https://orcid.org/0000-0002-3506-7067' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291704/bradford-kim.jpg',
+  },
+
+  /* ── Manchester ───────────────────────────────────────── */
+  {
+    name: 'Jenny Bryan',
+    uni: 'University of Manchester', dept: 'Department of Classics and Ancient History',
+    city: 'Manchester', position: 'Senior Lecturer in Classical Philosophy',
+    focus: 'Pre-Socratics', ancients: ['Parmenides', 'Empedocles'],
+    tags: ['epistemology', 'metaphysics'],
+    email: 'jenny.bryan@manchester.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://research.manchester.ac.uk/en/persons/jenny.bryan' }, { label: 'orcid', url: 'https://orcid.org/0000-0002-0539-7452' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291705/jenny-bryan.jpg',
+  },
+
+  /* ── Cambridge (additional) ───────────────────────────── */
+  {
+    name: 'Carol Atack',
+    uni: 'University of Cambridge', dept: 'Faculty of Classics',
+    city: 'Cambridge', position: 'Bye-Fellow and Director of Studies in Classics',
+    focus: 'Plato', ancients: ['Plato', 'Socrates'],
+    tags: ['politics', 'epistemology'],
+    email: 'cwa24@cam.ac.uk', web: '',
+    links: [
+      { label: 'Faculty page', url: 'https://www.classics.cam.ac.uk/directory/dr-carol-atack' },
+      { label: 'College page', url: 'https://newn.cam.ac.uk/person/carol-atack' },
+    , { label: 'orcid', url: 'https://orcid.org/0000-0001-9125-5436' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291706/carol-atack.jpg',
+  },
+  {
+    name: 'Yumi Suzuki',
+    uni: 'University of Cambridge', dept: 'Needham\ Research\ Institute',
+    city: 'Cambridge', position: 'Lloyd\-Dan\ David\ Research\ Fellow',
+    focus: 'Pre-Socratics', ancients: ['Socrates', 'Plato'],
+    tags: ['metaphysics', 'epistemology'],
+    email: 'ys747@cam.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://www.classics.cam.ac.uk/staff/yumi-suzuki' }, { label: 'orcid', url: 'https://orcid.org/0000-0002-3848-6347' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291706/yumi-suzuki.jpg',
+  },
+  {
+    name: 'Jingyi Jenny Zhao',
+    uni: 'University of Cambridge', dept: 'Needham Research Institute',
+    city: 'Cambridge', position: 'ISF Senior Research Fellow',
+    focus: 'Pre-Socratics', ancients: ['Socrates', 'Plato'],
+    tags: ['ethics', 'politics'],
+    email: 'jz292@cam.ac.uk', web: 'https://www.jingyizhao.com',
+    links: [{ label: 'College page', url: 'https://www.clarehall.cam.ac.uk/directory/zhao/' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777298055/jingyi-zhao.jpg',
+  },
+
+  /* ── Bath Spa ─────────────────────────────────────────── */
+  {
+    name: 'Saloni de Souza',
+    uni: 'Bath Spa University', dept: 'Department of Philosophy and Ethics',
+    city: 'Bath', position: 'Lecturer in Philosophy and Ethics',
+    focus: 'Hellenistic', ancients: ['Stoicism', 'Epicureanism'],
+    tags: ['ethics', 'mind'],
+    email: 's.desouza@bathspa.ac.uk',
+    web: 'https://www.salonidesouza.com',
+    links: [],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777298056/saloni-de-souza.jpg',
+  },
+
+  /* ── Exeter ───────────────────────────────────────────── */
+  {
+    name: 'Gabriele Galluzzo',
+    uni: 'University of Exeter', dept: 'Department of Classics, Ancient History, Religion and Theology',
+    city: 'Exeter', position: 'Associate Professor in Greek and Roman Philosophy',
+    focus: 'Aristotle', ancients: ['Aristotle'],
+    tags: ['metaphysics', 'language'],
+    email: 'G.Galluzzo@exeter.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://experts.exeter.ac.uk/22973-gabriele-galluzzo' }, { label: 'orcid', url: 'https://orcid.org/0000-0002-5500-3669' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777292090/gabriele-galluzzo.jpg',
+  },
+
+  /* ── Open University ──────────────────────────────────── */
+  {
+    name: 'Sophie Grace Chappell',
+    uni: 'The Open University', dept: 'Department of Philosophy',
+    city: 'Milton Keynes', position: 'Professor of Philosophy',
+    focus: 'Plato', ancients: ['Plato', 'Aristotle', 'Socrates'],
+    tags: ['ethics', 'metaphysics', 'epistemology'],
+    email: 'sophie-grace.chappell@open.ac.uk',
+    web: '',
+    links: [{ label: 'Faculty page', url: 'https://profiles.open.ac.uk/sophie-grace-chappell' }, { label: 'orcid', url: 'https://orcid.org/0000-0002-0289-4891' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777298056/sophie-chappell.jpg',
+  },
+
+  /* ── Liverpool ────────────────────────────────────────── */
+  {
+    name: 'Panayiota Vassilopoulou',
+    uni: 'University of Liverpool', dept: 'Department of Philosophy',
+    city: 'Liverpool', position: 'Reader in Philosophy',
+    focus: 'Hellenistic', ancients: ['Neoplatonism', 'Stoicism'],
+    tags: ['metaphysics', 'epistemology', 'ethics'],
+    email: 'P.Vassilopoulou@liverpool.ac.uk', web: '',
+    links: [{ label: 'Faculty page', url: 'https://www.liverpool.ac.uk/people/panayiota-vassilopoulou' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291707/panayiota-vassilopoulou.jpg',
+  },
+
+  /* ── Sheffield ────────────────────────────────────────── */
+  {
+    name: 'Angie Hobbs',
+    uni: 'University of Sheffield', dept: 'School of History, Philosophy and Digital Humanities',
+    city: 'Sheffield', position: 'Professor of the Public Understanding of Philosophy Emerita',
+    focus: 'Plato', ancients: ['Plato', 'Socrates'],
+    tags: ['ethics', 'politics', 'mind'],
+    email: 'a.hobbs@sheffield.ac.uk', web: 'https://angiehobbs.com',
+    links: [{ label: 'Faculty page', url: 'https://sheffield.ac.uk/hpdh/people/philosophy-staff/angie-hobbs' }, { label: 'orcid', url: 'https://orcid.org/0000-0003-2942-4061' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777291708/angie-hobbs.jpg',
+  },
+];
+
+/* ── Specialism cards (Browse by specialism tab) ─────────
+   key         matches values in SCHOLARS.ancients
+               (cards are now keyed on ancients, not focus)
+   img         public-domain image URL                      */
+const PHILOSOPHERS = [
+  {
+    key: 'Socrates', label: 'Socrates', dates: 'c. 470–399 BCE',
+    blurb: 'The examined life, dialectic, ethics',
+    img: 'https://commons.wikimedia.org/wiki/Special:FilePath/Socrates_Louvre.jpg?width=320',
+  },
+  {
+    key: 'Plato', label: 'Plato', dates: 'c. 428–348 BCE',
+    blurb: 'Republic, Phaedo, Symposium',
+    img: 'https://commons.wikimedia.org/wiki/Special:FilePath/Plato_Silanion_Musei_Capitolini_MC1377.jpg?width=320',
+  },
+  {
+    key: 'Aristotle', label: 'Aristotle', dates: '384–322 BCE',
+    blurb: 'Metaphysics, Nicomachean Ethics, Politics',
+    img: 'https://commons.wikimedia.org/wiki/Special:FilePath/Aristotle_Altemps_Inv8575.jpg?width=320',
+  },
+  {
+    key: 'Alexander of Aphrodisias', label: 'Alexander of Aphrodisias', dates: 'c. 200 CE',
+    blurb: 'Commentator on Aristotle',
+    img: 'https://commons.wikimedia.org/wiki/Special:FilePath/Aristotle_Altemps_Inv8575.jpg?width=320',
+  },
+  {
+    key: 'Stoicism', label: 'Stoicism', dates: 'c. 300 BCE –',
+    blurb: 'Zeno, Chrysippus, Marcus Aurelius, Seneca',
+    img: 'https://commons.wikimedia.org/wiki/Special:FilePath/MSR-ra-1-Zeno_of_Citium.jpg?width=320',
+  },
+  {
+    key: 'Epicureanism', label: 'Epicureanism', dates: 'c. 307 BCE –',
+    blurb: 'Epicurus, Lucretius, Philodemus',
+    img: 'https://commons.wikimedia.org/wiki/Special:FilePath/Epikouros_BM_1843.jpg?width=320',
+  },
+  {
+    key: 'Scepticism', label: 'Scepticism', dates: 'c. 360 BCE –',
+    blurb: 'Pyrrho, Arcesilaus, Sextus Empiricus',
+    subsections: ['Pyrrhonian Scepticism', 'Academic Scepticism'],
+    img: 'https://commons.wikimedia.org/wiki/Special:FilePath/Sextus_empiricus.jpg?width=320',
+  },
+  {
+    key: 'Neoplatonism', label: 'Neoplatonism', dates: 'c. 3rd–6th c. CE',
+    blurb: 'Plotinus, Porphyry, Proclus',
+    img: 'https://commons.wikimedia.org/wiki/Special:FilePath/Plotinos.jpg?width=320',
+  },
+  {
+    key: 'Cynicism', label: 'Cynicism', dates: 'c. 400–300 BCE',
+    blurb: 'Diogenes of Sinope, Antisthenes',
+    img: 'https://commons.wikimedia.org/wiki/Special:FilePath/Diogenes_Sinope_BM_1842.jpg?width=320',
+  },
+  {
+    key: 'Cyrenaics', label: 'Cyrenaics', dates: 'c. 400–300 BCE',
+    blurb: 'Aristippus, pleasure and the good life',
+    img: 'https://commons.wikimedia.org/wiki/Special:FilePath/Aristippus.jpg?width=320',
+  },
+  {
+    key: 'Philodemus of Gadara', label: 'Philodemus of Gadara', dates: 'c. 110–40 BCE',
+    blurb: 'Epicurean philosopher, Herculaneum papyri',
+    img: 'https://commons.wikimedia.org/wiki/Special:FilePath/Epikouros_BM_1843.jpg?width=320',
+  },
+  {
+    key: 'Heraclitus', label: 'Heraclitus', dates: 'c. 535–475 BCE',
+    blurb: 'Flux, logos, the unity of opposites',
+    img: 'https://commons.wikimedia.org/wiki/Special:FilePath/Heraclitus_Ephesus.jpg?width=320',
+  },
+  {
+    key: 'Parmenides', label: 'Parmenides', dates: 'c. 515–450 BCE',
+    blurb: 'Being, monism, the way of truth',
+    img: 'https://commons.wikimedia.org/wiki/Special:FilePath/Parmenides.jpg?width=320',
+  },
+  {
+    key: 'Democritus', label: 'Democritus', dates: 'c. 460–370 BCE',
+    blurb: 'Atomism, materialism',
+    img: 'https://commons.wikimedia.org/wiki/Special:FilePath/Democritus2.jpg?width=320',
+  },
+  {
+    key: 'Empedocles', label: 'Empedocles', dates: 'c. 490–430 BCE',
+    blurb: 'Four roots, Love and Strife',
+    img: 'https://commons.wikimedia.org/wiki/Special:FilePath/Empedocles_in_Thomas_Stanley_History_of_Philosophy.jpg?width=320',
+  },
+  {
+    key: 'Protagoras', label: 'Protagoras', dates: 'c. 490–420 BCE',
+    blurb: 'Sophist, relativism, "man is the measure"',
+    img: 'https://commons.wikimedia.org/wiki/Special:FilePath/Protagoras.jpg?width=320',
+  },
+  {
+    key: 'Xenophanes', label: 'Xenophanes', dates: 'c. 570–475 BCE',
+    blurb: 'Theology, epistemology, natural philosophy',
+    img: 'https://commons.wikimedia.org/wiki/Special:FilePath/Xenophanes.jpg?width=320',
+  },
+  {
+    key: 'Anaximander', label: 'Anaximander', dates: 'c. 610–546 BCE',
+    blurb: 'The apeiron, cosmology',
+    img: 'https://commons.wikimedia.org/wiki/Special:FilePath/Anaximander.jpg?width=320',
+  },
+];
+
+/* ── Map coordinates ── add new cities here as needed ── */
+const UNI_COORDS = {
+  Edinburgh:     { lat: 55.9445, lng: -3.1892 },
+  Glasgow:       { lat: 55.8714, lng: -4.2882 },
+  Durham:        { lat: 54.7740, lng: -1.5782 },
+  'St Andrews':  { lat: 56.3398, lng: -2.7967 },
+  Leeds:         { lat: 53.8067, lng: -1.5550 },
+  Manchester:    { lat: 53.4668, lng: -2.2339 },
+  Nottingham:    { lat: 52.9382, lng: -1.1974 },
+  Coventry:      { lat: 52.3838, lng: -1.5603 },
+  Cambridge:     { lat: 52.2043, lng:  0.1149 },
+  Oxford:        { lat: 51.7548, lng: -1.2544 },
+  London:        { lat: 51.5074, lng: -0.1278 },
+  Bristol:       { lat: 51.4584, lng: -2.6032 },
+  Southampton:   { lat: 50.9340, lng: -1.3967 },
+  Canterbury:    { lat: 51.2802, lng:  1.0789 },
+  Colchester:    { lat: 51.8893, lng:  0.9040 },
+  Bath:          { lat: 51.3781, lng: -2.3597 },
+  Exeter:        { lat: 50.7352, lng: -3.5331 },
+  'Milton Keynes':{ lat: 52.0406, lng: -0.7594 },
+  Liverpool:     { lat: 53.4668, lng: -2.9720 },
+  Sheffield:     { lat: 53.3811, lng: -1.4701 },
+};
+
+/* ── Research theme tag styles ── */
+const THEMES = {
+  metaphysics:  { label: 'Metaphysics',       bg: '#eceaf6', txt: '#2a2260' },
+  ethics:       { label: 'Ethics',            bg: '#e2f2ea', txt: '#0e4a2e' },
+  epistemology: { label: 'Epistemology',       bg: '#fdf2e2', txt: '#6b3800' },
+  mind:         { label: 'Phil. of mind',     bg: '#fce8ef', txt: '#6b0030' },
+  politics:     { label: 'Political phil.',   bg: '#e2edf8', txt: '#0b3860' },
+  language:     { label: 'Language & logic',  bg: '#e8f4e3', txt: '#1a4808' },
+};
+
+/* Ancient tags — warm terracotta, distinct from theme tags */
+const ANCT = { bg: '#f5ede2', txt: '#6b3a10' };
+
+/* Network colours */
+const FOCUS_HEX   = { 'Plato':'#3d3480', 'Aristotle':'#1a6b52', 'Hellenistic':'#8a4218', 'Pre-Socratics':'#575350' };
+const FOCUS_LIGHT = { 'Plato':'#eceaf6', 'Aristotle':'#e2f2ea', 'Hellenistic':'#f4ece3', 'Pre-Socratics':'#ececec' };
+
+</script>
+
+<!-- ════════════════════ HEADER ════════════════════ -->
+<header>
+  <div class="header-inner">
+    <p class="eyebrow">UK Research Network</p>
+    <h1>Researchers in <em>Greek and Roman Philosophy</em></h1>
+    <p class="tagline">An interactive directory of researchers in Greek and Roman philosophy based in the UK. Browse by specialism, institution, or explore the network of shared research interests.</p>
+    <nav class="tabs" role="tablist">
+      <button class="tab-btn active" role="tab" aria-selected="true"  onclick="switchTab('philosopher',this)">◇ Browse by specialism</button>
+      <button class="tab-btn"        role="tab" aria-selected="false" onclick="switchTab('map',this)">◈ Browse by institution</button>
+      <button class="tab-btn"        role="tab" aria-selected="false" onclick="switchTab('network',this)">◎ Research network</button>
+      <button class="tab-btn tab-btn-submit" role="tab" aria-selected="false" onclick="switchTab('submit',this)">✦ Submit your profile</button>
+    </nav>
+  </div>
+</header>
+
+<!-- ════════════════════ PANELS ════════════════════ -->
+<div class="panel-wrap">
+
+  <!-- VIEW 1: BROWSE BY SPECIALISM -->
+  <div id="view-philosopher" class="tab-panel active">
+    <p class="view-intro">Select an ancient thinker or school to see which researchers are working on them. Use the sub-specialism buttons to narrow further.</p>
+    <div class="phil-grid" id="phil-grid"></div>
+    <div class="sub-filter-row" id="sub-filter-row" style="display:none"></div>
+    <div class="phil-result" id="phil-result">
+      <p class="panel-empty">Choose a philosopher or school above to see the researchers working on them.</p>
+    </div>
+  </div>
+
+  <!-- VIEW 2: BROWSE BY INSTITUTION -->
+  <div id="view-map" class="tab-panel">
+    <p class="view-intro">Click a marker to see researchers at that institution. Markers are sized by number of researchers.</p>
+    <div class="map-layout">
+      <div id="mapF"></div>
+      <div class="card map-panel" id="map-panel">
+        <p class="panel-empty">Select a marker on the map to see who is based there.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 3: RESEARCH NETWORK -->
+  <div id="view-network" class="tab-panel">
+    <div class="toolbar">
+      <span class="toolbar-label">Filter by specialism</span>
+      <button class="filter-btn active" onclick="setNetFilter('all',this)">All</button>
+      <button class="filter-btn" onclick="setNetFilter('Pre-Socratics',this)">Pre-Socratics</button>
+      <button class="filter-btn" onclick="setNetFilter('Socrates',this)">Socrates</button>
+      <button class="filter-btn" onclick="setNetFilter('Plato',this)">Plato</button>
+      <button class="filter-btn" onclick="setNetFilter('Aristotle',this)">Aristotle</button>
+      <button class="filter-btn" onclick="setNetFilter('Epicureanism',this)">Epicureanism</button>
+      <button class="filter-btn" onclick="setNetFilter('Stoicism',this)">Stoicism</button>
+      <button class="filter-btn" onclick="setNetFilter('Scepticism',this)">Scepticism</button>
+      <button class="filter-btn" onclick="setNetFilter('Peripatetics',this)">Peripatetics</button>
+      <button class="filter-btn" onclick="setNetFilter('Neoplatonism',this)">Neoplatonism</button>
+    </div>
+    <div class="net-layout">
+      <div>
+        <div class="card canvas-outer"><canvas id="net"></canvas></div>
+        <div class="canvas-foot">
+          <div class="leg-item"><div class="leg-dot" style="background:#3d3480"></div>Plato</div>
+          <div class="leg-item"><div class="leg-dot" style="background:#1a6b52"></div>Aristotle</div>
+          <div class="leg-item"><div class="leg-dot" style="background:#8a4218"></div>Hellenistic</div>
+          <div class="leg-item"><div class="leg-dot" style="background:#575350"></div>Pre-Socratics</div>
+          <div class="leg-item" style="margin-left:4px">
+            <svg width="26" height="10"><line x1="0" y1="5" x2="26" y2="5" stroke="#3d3480" stroke-width="2.2"/></svg>Strong overlap
+          </div>
+          <div class="leg-item">
+            <svg width="26" height="10"><line x1="0" y1="5" x2="26" y2="5" stroke="#bbb5ad" stroke-width="1" stroke-dasharray="4,3"/></svg>Partial overlap
+          </div>
+        </div>
+      </div>
+      <div class="card net-panel" id="net-panel">
+        <p class="panel-empty">Click any node to see a researcher's profile and discover who shares their interests.</p>
+      </div>
+    </div>
+  </div>
+  <!-- VIEW 4: SUBMIT YOUR PROFILE -->
+  <div id="view-submit" class="tab-panel">
+    <div class="submit-layout">
+
+      <!-- Left: instructions -->
+      <div class="submit-info">
+        <h2 class="submit-heading">Submit your profile</h2>
+        <p class="submit-body">
+          Are you a researcher in Greek and Roman philosophy based in the UK?
+          Fill in the form and your details will be sent to the directory maintainer,
+          who will review and add your profile to the site.
+        </p>
+        <p class="submit-body">
+          Fields marked <span class="req-star">*</span> are required.
+          All other fields are optional but help visitors find and connect with you.
+        </p>
+        <div class="submit-note">
+          <strong>What happens next?</strong><br>
+          Your submission is sent directly to the maintainer by email.
+          You should hear back within a few days confirming whether your profile
+          has been added. Your email address will not be published without your consent.
+        </div>
+      </div>
+
+      <!-- Right: form -->
+      <div class="submit-form-col">
+        <!-- ╔══════════════════════════════════════════════════════════════╗
+             ║  SETUP: Replace YOUR_FORMSPREE_ENDPOINT below with your     ║
+             ║  Formspree form URL, e.g. https://formspree.io/f/abcd1234  ║
+             ║  Get one free at https://formspree.io                       ║
+             ╚══════════════════════════════════════════════════════════════╝ -->
+        <form id="profile-form"
+              action="https://formspree.io/f/meevvvpe"
+              method="POST"
+              novalidate>
+
+          <!-- Hidden field so Formspree email has a clear subject -->
+          <input type="hidden" name="_subject" value="New profile submission — Greek and Roman Philosophy Directory">
+
+          <div class="form-grid">
+
+            <div class="form-field form-field--full">
+              <label class="form-label" for="f-name">Full name <span class="req-star">*</span></label>
+              <input class="form-input" id="f-name" name="name" type="text"
+                     placeholder="e.g. Jane Smith" required autocomplete="name">
+              <span class="form-err" id="err-name"></span>
+            </div>
+
+            <div class="form-field">
+              <label class="form-label" for="f-position">Position <span class="req-star">*</span></label>
+              <input class="form-input" id="f-position" name="position" type="text"
+                     placeholder="e.g. Postdoctoral Research Fellow" required>
+              <span class="form-err" id="err-position"></span>
+            </div>
+
+            <div class="form-field">
+              <label class="form-label" for="f-institution">Institution <span class="req-star">*</span></label>
+              <input class="form-input" id="f-institution" name="institution" type="text"
+                     placeholder="e.g. University of Cambridge" required>
+              <span class="form-err" id="err-institution"></span>
+            </div>
+
+            <div class="form-field form-field--full">
+              <label class="form-label" for="f-dept">Faculty / Department <span class="req-star">*</span></label>
+              <input class="form-input" id="f-dept" name="faculty_department" type="text"
+                     placeholder="e.g. Faculty of Classics" required>
+              <span class="form-err" id="err-dept"></span>
+            </div>
+
+            <div class="form-field form-field--full">
+              <label class="form-label" for="f-college">College affiliation</label>
+              <input class="form-input" id="f-college" name="college_affiliation" type="text"
+                     placeholder="e.g. Corpus Christi College (if applicable)">
+            </div>
+
+            <div class="form-field form-field--full">
+              <label class="form-label" for="f-specialisms">
+                Specialisms <span class="req-star">*</span>
+              </label>
+              <textarea class="form-input form-textarea" id="f-specialisms" name="specialisms"
+                        placeholder="e.g. Plato, Aristotle's ethics, Stoicism, ancient epistemology…"
+                        rows="3" required></textarea>
+              <span class="form-hint">List the ancient philosophers, schools, or philosophical themes you work on.</span>
+              <span class="form-err" id="err-specialisms"></span>
+            </div>
+
+            <div class="form-field">
+              <label class="form-label" for="f-email">Email address</label>
+              <input class="form-input" id="f-email" name="email" type="email"
+                     placeholder="you@university.ac.uk" autocomplete="email">
+              <span class="form-hint">Will only be published with your consent.</span>
+              <span class="form-err" id="err-email"></span>
+            </div>
+
+            <div class="form-field">
+              <label class="form-label" for="f-web">Personal website</label>
+              <input class="form-input" id="f-web" name="personal_website" type="url"
+                     placeholder="https://yourname.com">
+            </div>
+
+            <div class="form-field">
+              <label class="form-label" for="f-faculty-page">Faculty page URL</label>
+              <input class="form-input" id="f-faculty-page" name="faculty_page" type="url"
+                     placeholder="https://…">
+            </div>
+
+            <div class="form-field">
+              <label class="form-label" for="f-college-page">College page URL</label>
+              <input class="form-input" id="f-college-page" name="college_page" type="url"
+                     placeholder="https://…">
+            </div>
+
+            <div class="form-field form-field--full">
+              <label class="form-label" for="f-photo-upload">Profile photo</label>
+              <!-- Hidden field — populated with the Cloudinary URL after upload -->
+              <input type="hidden" id="f-photo" name="photo_url">
+              <div class="photo-upload-area" id="photo-drop-zone">
+                <input class="photo-upload-input" id="f-photo-upload" type="file"
+                       accept="image/jpeg,image/png,image/webp,image/gif"
+                       aria-label="Upload profile photo">
+                <div id="photo-placeholder">
+                  <div class="photo-upload-icon">↑</div>
+                  <div class="photo-upload-label">
+                    <strong>Click to upload</strong> or drag &amp; drop<br>
+                    JPG, PNG or WebP · max 5 MB
+                  </div>
+                </div>
+                <div class="photo-preview-wrap" id="photo-preview-wrap" style="display:none">
+                  <img class="photo-preview-img" id="photo-preview-img" src="" alt="Preview">
+                  <button class="photo-preview-remove" type="button" onclick="removePhoto(event)">Remove</button>
+                </div>
+              </div>
+              <div class="photo-upload-status" id="photo-upload-status"></div>
+              <span class="form-hint">Your photo will be uploaded securely. Leave blank to show initials only.</span>
+            </div>
+
+            <div class="form-field form-field--full">
+              <label class="form-label" for="f-notes">Anything else you'd like to add?</label>
+              <textarea class="form-input form-textarea" id="f-notes" name="additional_notes"
+                        placeholder="Any other information you'd like to include…"
+                        rows="3"></textarea>
+            </div>
+
+          </div><!-- /.form-grid -->
+
+          <div class="form-footer">
+            <button class="form-submit-btn" id="submit-btn" type="submit">Send submission</button>
+            <span class="form-status" id="form-status" aria-live="polite"></span>
+          </div>
+
+        </form>
+
+        <!-- Success message (hidden until submission) -->
+        <div class="form-success" id="form-success" style="display:none">
+          <div class="form-success-icon">✓</div>
+          <h3 class="form-success-heading">Submission received!</h3>
+          <p class="form-success-body">
+            Thank you — your details have been sent to the directory maintainer.
+            You should hear back within a few days.
+          </p>
+          <button class="form-reset-btn" onclick="resetForm()">Submit another profile</button>
+        </div>
+
+      </div><!-- /.submit-form-col -->
+    </div><!-- /.submit-layout -->
+  </div>
+
+</div><!-- /.panel-wrap -->
+
+<footer>Created and maintained by Cristóbal Zarzar. To add or update a researcher profile, please use the <a href="#" onclick="switchTab('submit',document.querySelectorAll('.tab-btn')[3]);return false;">submission form</a> or contact Cris at <a href="mailto:cz298@cam.ac.uk">cz298@cam.ac.uk</a>.</footer>
+
+<!-- ════════════════════ MODAL ════════════════════ -->
+<div class="modal-backdrop" id="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-name" onclick="closeModalOnBackdrop(event)">
+  <div class="modal-box" id="modal-box">
+    <button class="modal-close" onclick="closeModal()" aria-label="Close profile">&times;</button>
+
+    <!-- Header: avatar + name block -->
+    <div class="modal-header">
+      <div class="modal-avatar-lg" id="modal-avatar"></div>
+      <div class="modal-header-text">
+        <p class="modal-name"   id="modal-name"></p>
+        <p class="modal-pos"    id="modal-pos"></p>
+        <p class="modal-dept"   id="modal-dept"></p>
+      </div>
+    </div>
+
+    <!-- Body: tags + links -->
+    <div class="modal-body">
+      <p class="modal-section-label">Research interests</p>
+      <div class="modal-tag-row" id="modal-tags"></div>
+
+      <p class="modal-section-label" id="modal-links-label" style="display:none">Links</p>
+      <div class="modal-links" id="modal-links"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ SCRIPTS ════════════════════ -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+/* ── Tab switching ── */
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+  document.getElementById('view-' + id).classList.add('active');
+  btn.classList.add('active'); btn.setAttribute('aria-selected','true');
+  if (id === 'map')     initMap();
+  if (id === 'network') initNetwork();
+}
+
+/* ── Avatar HTML helpers ── */
+function initials(name) { return name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase(); }
+
+function avatarHtml(s, size) {
+  const cls   = size === 'lg' ? 'r-avatar-lg' : 'r-avatar';
+  const icls  = size === 'lg' ? 'r-avatar-lg-initials' : 'r-avatar-initials';
+  const inner = s.photo
+    ? `<img src="${s.photo}" alt="${s.name}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">`
+      + `<span class="${icls}" style="display:none">${initials(s.name)}</span>`
+    : `<span class="${icls}">${initials(s.name)}</span>`;
+  return `<div class="${cls}">${inner}</div>`;
+}
+
+/* ── Tag HTML helpers ── */
+function themeTagsHtml(tags) {
+  return (tags || []).map(t => {
+    const th = THEMES[t] || { label: t, bg: '#eee', txt: '#555' };
+    return `<span class="tag" style="background:${th.bg};color:${th.txt}">${th.label}</span>`;
+  }).join('');
+}
+function ancientTagsHtml(ancients) {
+  return (ancients || []).map(a =>
+    `<span class="tag" style="background:${ANCT.bg};color:${ANCT.txt}">${a}</span>`
+  ).join('');
+}
+function allTagsHtml(s) { return ancientTagsHtml(s.ancients) + themeTagsHtml(s.tags); }
+
+/* ── Links HTML helper ── */
+const ENVELOPE_SVG  = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>`;
+const ORCID_SVG     = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" style="vertical-align:-2px;fill:#A6CE39"><path d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zm-1.844 4.852c.523 0 .95.427.95.95a.951.951 0 0 1-1.9 0c0-.523.427-.95.95-.95zm-2.18 2.906h1.396v9.485H7.976V7.758zm3.576 0h3.76c3.58 0 5.027 2.564 5.027 4.743 0 2.437-1.893 4.742-5.016 4.742h-3.77V7.758zm1.396 1.267v6.95h2.26c2.29 0 3.674-1.551 3.674-3.475 0-1.897-1.307-3.475-3.554-3.475h-2.38z"/></svg>`;
+const GSCHOLAR_SVG  = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" style="vertical-align:-2px;fill:#4285F4"><path d="M12 24a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm0-24L0 9.5l4.838 3.94A8 8 0 0 1 12 10a8 8 0 0 1 7.162 3.44L24 9.5z"/></svg>`;
+
+function linksHtml(s, fontSize) {
+  const fs = fontSize || '0.76rem';
+  const parts = [];
+  if (s.email) parts.push(`<a href="mailto:${s.email}" style="font-size:${fs};display:inline-flex;align-items:center;gap:4px">${ENVELOPE_SVG} ${s.email}</a>`);
+  if (s.web)   parts.push(`<a href="${s.web}" target="_blank" rel="noopener" style="font-size:${fs}">Personal website</a>`);
+  (s.links || []).forEach(l => {
+    if (l.label === 'orcid')
+      parts.push(`<a href="${l.url}" target="_blank" rel="noopener" title="ORCID" style="font-size:${fs};display:inline-flex;align-items:center;gap:4px">${ORCID_SVG} ORCID</a>`);
+    else if (l.label === 'google-scholar')
+      parts.push(`<a href="${l.url}" target="_blank" rel="noopener" title="Google Scholar" style="font-size:${fs};display:inline-flex;align-items:center;gap:4px">${GSCHOLAR_SVG} Google Scholar</a>`);
+    else
+      parts.push(`<a href="${l.url}" target="_blank" rel="noopener" style="font-size:${fs}">${l.label}</a>`);
+  });
+  if (!parts.length) return '';
+  return `<div class="rc-links">${parts.join('<span style="color:var(--ink-faint)"> · </span>')}</div>`;
+}
+
+/* ── Full researcher side-panel HTML (network view) ── */
+function scholarDetailHtml(s) {
+  return `
+    ${avatarHtml(s, 'lg')}
+    <p class="rc-name">${s.name}</p>
+    <p class="rc-pos">${s.position}</p>
+    <p class="rc-dept">${s.dept}<br>${s.uni}</p>
+    ${linksHtml(s)}
+    <p class="rc-section">Research interests</p>
+    <div class="tag-row">${allTagsHtml(s)}</div>`;
+}
+
+/* ══════════════════════════════════════
+   VIEW 1 — BROWSE BY SPECIALISM
+   ══════════════════════════════════════ */
+(function buildPhilGrid() {
+  const grid = document.getElementById('phil-grid');
+  PHILOSOPHERS.forEach(p => {
+    /* Match scholars who have this key in their ancients array,
+       OR (for Scepticism) who have any of the subsections */
+    const matchKeys = p.subsections ? [p.key, ...p.subsections] : [p.key];
+    const count = SCHOLARS.filter(s =>
+      (s.ancients || []).some(a => matchKeys.includes(a))
+    ).length;
+    if (count === 0) return; /* hide cards with no researchers */
+    const card = document.createElement('div');
+    card.className = 'phil-card';
+    card.innerHTML = `
+      <div class="phil-img-wrap">
+        <img src="${p.img}" alt="${p.label}" loading="lazy" onerror="this.style.display='none'">
+      </div>
+      <div class="phil-name">${p.label}</div>
+      <div class="phil-dates">${p.dates}</div>
+      <div class="phil-blurb">${p.blurb}</div>
+      <div class="phil-count">${count} researcher${count !== 1 ? 's' : ''}</div>`;
+    card.addEventListener('click', () => selectPhil(p, card));
+    grid.appendChild(card);
+  });
+})();
+
+let philActiveKey = null;
+
+function selectPhil(p, card) {
+  document.querySelectorAll('.phil-card').forEach(c => c.classList.remove('active'));
+  card.classList.add('active');
+  philActiveKey = p.key;
+  /* Scepticism has subsections; hide sub-filter row for all others */
+  buildSubFilters(p);
+  renderPhilResults(p.key, 'all');
+}
+
+function scholarsForCard(p, sub) {
+  /* Keys to match against scholars.ancients */
+  const matchKeys = p.subsections ? [p.key, ...p.subsections] : [p.key];
+  let scholars = SCHOLARS.filter(s =>
+    (s.ancients || []).some(a => matchKeys.includes(a))
+  );
+  if (sub !== 'all' && p.subsections) {
+    scholars = scholars.filter(s => (s.ancients || []).includes(sub));
+  }
+  return scholars;
+}
+
+function buildSubFilters(p) {
+  const row = document.getElementById('sub-filter-row');
+  const subs = (p.subsections || []).filter(sub =>
+    SCHOLARS.some(s => (s.ancients || []).includes(sub))
+  );
+  if (!subs.length) { row.style.display = 'none'; return; }
+  row.style.display = 'flex';
+  row.innerHTML = `<span class="sub-label">Narrow by</span>`;
+  const makeBtn = (label, val, active) => {
+    const b = document.createElement('button');
+    b.className = 'sub-btn' + (active ? ' active' : '');
+    b.textContent = label;
+    b.onclick = () => {
+      document.querySelectorAll('.sub-btn').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      const p2 = PHILOSOPHERS.find(x => x.key === philActiveKey);
+      renderPhilResults(philActiveKey, val);
+    };
+    return b;
+  };
+  row.appendChild(makeBtn('All', 'all', true));
+  subs.forEach(sub => {
+    const count = SCHOLARS.filter(s => (s.ancients || []).includes(sub)).length;
+    row.appendChild(makeBtn(`${sub} (${count})`, sub, false));
+  });
+}
+
+function renderPhilResults(key, sub) {
+  const p = PHILOSOPHERS.find(x => x.key === key);
+  const scholars = scholarsForCard(p, sub);
+
+  const subLabel = sub !== 'all'
+    ? ` <span style="font-size:0.8rem;font-weight:400;color:var(--ink-muted)">· ${sub}</span>` : '';
+
+  const chips = scholars.map(s => {
+    const idx = SCHOLARS.indexOf(s);
+    return `
+    <div class="scholar-chip" data-scholar-id="${idx}" style="cursor:pointer" title="Click to expand profile">
+      <div class="chip-top">
+        ${avatarHtml(s, 'sm')}
+        <div class="chip-text">
+          <div class="sc-name">${s.name}</div>
+          <div class="sc-pos">${s.position}</div>
+        </div>
+      </div>
+      <div class="sc-dept">${s.dept}<br>${s.uni}</div>
+      ${linksHtml(s, '0.72rem')}
+      <div class="sc-tags">${allTagsHtml(s)}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('phil-result').innerHTML = `
+    <p class="pr-heading">Researchers working on ${p.label}${subLabel}
+      <span style="font-size:0.8rem;font-weight:400;color:var(--ink-muted)">(${scholars.length})</span>
+    </p>
+    ${scholars.length
+      ? `<div class="scholar-grid">${chips}</div>`
+      : `<p style="color:var(--ink-faint);font-style:italic;font-family:'EB Garamond',serif;margin-top:0.5rem">No researchers listed for this selection.</p>`}`;
+}
+
+/* ══════════════════════════════════════
+   VIEW 2 — BROWSE BY INSTITUTION (MAP)
+   ══════════════════════════════════════ */
+let mapReady = false;
+let mapInstance = null;
+
+function shortUniLabel(uni) {
+  return uni
+    .replace('University of ', '')
+    .replace('University College London', 'UCL')
+    .replace("King's College London", 'KCL')
+    .replace('Royal Holloway, University of London', 'Royal Holloway')
+    .replace('Birkbeck, University of London', 'Birkbeck')
+    .replace(', University of London', '');
+}
+
+function coordKey(coord) {
+  return `${coord.lat.toFixed(4)},${coord.lng.toFixed(4)}`;
+}
+
+function offsetCoord(coord, index, total) {
+  if (total <= 1) return coord;
+
+  /*
+    Keep scholars.js compatible: it can continue to store city-level
+    coordinates only. If several institutions share one city coordinate
+    — especially London — this spreads their markers slightly so each
+    institution remains separately clickable. If you later add institution
+    keys to UNI_COORDS, those exact coordinates will be used instead.
+  */
+  const angle = (index / total) * 2 * Math.PI;
+  const radius = 0.018 + Math.min(total, 8) * 0.0015;
+  return {
+    lat: coord.lat + Math.sin(angle) * radius,
+    lng: coord.lng + Math.cos(angle) * radius,
+  };
+}
+
+function initMap() {
+  if (mapReady) {
+    if (mapInstance) setTimeout(() => mapInstance.invalidateSize(), 0);
+    return;
+  }
+  mapReady = true;
+
+  const map = L.map('mapF', { scrollWheelZoom: false }).setView([54.5, -3.2], 6);
+  mapInstance = map;
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+    subdomains: 'abcd', maxZoom: 19,
+  }).addTo(map);
+
+  const byInstitution = {};
+  SCHOLARS.forEach(s => {
+    const key = s.uni || 'Unknown institution';
+    (byInstitution[key] = byInstitution[key] || []).push(s);
+  });
+
+  /* Group institutions by city coordinate key */
+  const byCoord = {};
+  Object.entries(byInstitution).forEach(([uni, scholars]) => {
+    const city = scholars[0]?.city || '';
+    const baseCoord = UNI_COORDS[uni] || UNI_COORDS[city];
+    if (!baseCoord) return;
+    const key = coordKey(baseCoord);
+    if (!byCoord[key]) byCoord[key] = { coord: baseCoord, city, institutions: [] };
+    byCoord[key].institutions.push({ uni, scholars });
+  });
+
+  const bounds = [];
+
+  Object.values(byCoord).forEach(({ coord, city, institutions }) => {
+    bounds.push([coord.lat, coord.lng]);
+    const isGrouped = institutions.length > 1;
+    const totalScholars = institutions.reduce((n, i) => n + i.scholars.length, 0);
+    const pinLabel = isGrouped ? city : institutions[0].uni;
+    const n = totalScholars;
+
+    const pinW = 36, pinH = 44, totalH = pinH + 18;
+    const icon = L.divIcon({
+      className: '',
+      html: `
+        <div style="display:flex;flex-direction:column;align-items:center;cursor:pointer;width:${pinW}px">
+          <svg width="${pinW}" height="${pinH}" viewBox="0 0 36 44" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18,42 Q4,28 4,16 A14,14 0 1,1 32,16 Q32,28 18,42Z" fill="#3d3480" stroke="#fff" stroke-width="1.5"/>
+            <text x="18" y="19" text-anchor="middle" dominant-baseline="central"
+              font-size="${n > 9 ? 9 : 11}" font-weight="600" fill="white"
+              font-family="'DM Sans',sans-serif">${n}</text>
+          </svg>
+          <div style="font-size:10px;font-weight:500;color:#3d3480;font-family:'DM Sans',sans-serif;
+            background:rgba(255,255,255,0.92);border:1px solid rgba(61,52,128,0.25);
+            border-radius:10px;padding:1px 7px;margin-top:-2px;white-space:nowrap;
+            box-shadow:0 1px 3px rgba(0,0,0,0.1)">${pinLabel}</div>
+        </div>`,
+      iconSize:   [pinW, totalH],
+      iconAnchor: [pinW / 2, pinH],
+    });
+
+    L.marker([coord.lat, coord.lng], { icon }).addTo(map)
+      .on('click', () => {
+        if (isGrouped) showGroupedPanel(city, institutions);
+        else showMapPanel(institutions[0].uni, city, institutions[0].scholars);
+      });
+  });
+
+  if (bounds.length) map.fitBounds(bounds, { padding: [28, 28], maxZoom: 6 });
+  setTimeout(() => map.invalidateSize(), 0);
+}
+
+/* Sort scholars by surname (last word of name) */
+function sortBySurname(arr) {
+  return [...arr].sort((a, b) => {
+    const surnameA = a.name.trim().split(' ').pop().toLowerCase();
+    const surnameB = b.name.trim().split(' ').pop().toLowerCase();
+    return surnameA.localeCompare(surnameB);
+  });
+}
+
+function showGroupedPanel(city, institutions) {
+  const panel = document.getElementById('map-panel');
+
+  function renderPanel(activeUni) {
+    const inst = institutions.find(i => i.uni === activeUni);
+    const sorted = sortBySurname(inst.scholars);
+    const tabs = institutions.map(({ uni }) => `
+      <button class="map-inst-tab${uni === activeUni ? ' active' : ''}"
+        data-uni="${uni}">${shortUniLabel(uni)}</button>`
+    ).join('');
+
+    const rows = sorted.map(s => {
+      const idx = SCHOLARS.indexOf(s);
+      return `
+        <div class="map-r-item" data-scholar-id="${idx}" style="cursor:pointer" title="Click to expand profile">
+          <div class="map-r-top">
+            ${avatarHtml(s, 'sm')}
+            <div class="map-r-text">
+              <p class="rc-name" style="font-size:1rem">${s.name}</p>
+              <p class="rc-pos">${s.position}</p>
+              <p class="rc-dept" style="margin-bottom:0">${s.dept}</p>
+            </div>
+          </div>
+          ${linksHtml(s, '0.74rem')}
+          <div class="tag-row">${allTagsHtml(s)}</div>
+        </div>`;
+    }).join('');
+
+    panel.innerHTML = `
+      <p class="rc-name" style="margin-bottom:10px">${city}</p>
+      <div class="map-inst-tabs">${tabs}</div>
+      <p class="rc-name" style="font-size:1rem;margin-bottom:2px">${activeUni}</p>
+      <p class="rc-dept" style="margin-bottom:12px">${inst.scholars.length} researcher${inst.scholars.length > 1 ? 's' : ''}</p>
+      ${rows}`;
+
+    panel.querySelectorAll('.map-inst-tab').forEach(btn => {
+      btn.onclick = () => renderPanel(btn.dataset.uni);
+    });
+  }
+
+  renderPanel(institutions[0].uni);
+}
+
+function showMapPanel(uni, city, scholars) {
+  const sorted = sortBySurname(scholars);
+  const rows = sorted.map(s => {
+    const idx = SCHOLARS.indexOf(s);
+    return `
+    <div class="map-r-item" data-scholar-id="${idx}" style="cursor:pointer" title="Click to expand profile">
+      <div class="map-r-top">
+        ${avatarHtml(s, 'sm')}
+        <div class="map-r-text">
+          <p class="rc-name" style="font-size:1rem">${s.name}</p>
+          <p class="rc-pos">${s.position}</p>
+          <p class="rc-dept" style="margin-bottom:0">${s.dept}</p>
+        </div>
+      </div>
+      ${linksHtml(s, '0.74rem')}
+      <div class="tag-row">${allTagsHtml(s)}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('map-panel').innerHTML = `
+    <p class="rc-name" style="margin-bottom:2px">${uni}</p>
+    <p class="rc-dept" style="margin-bottom:14px">${city} · ${scholars.length} researcher${scholars.length > 1 ? 's' : ''}</p>
+    ${rows}`;
+}
+
+/* ══════════════════════════════════════
+   VIEW 3 — RESEARCH NETWORK
+   ══════════════════════════════════════ */
+let netReady = false, netSelected = null, netFilter = 'all';
+let dragging = null, dragOX = 0, dragOY = 0, dragMoved = false;
+const R = 19;
+
+const nodes = SCHOLARS.map((s, i) => ({ ...s, id: i, x: 0, y: 0, vx: 0, vy: 0 }));
+const edges = [];
+for (let i = 0; i < nodes.length; i++)
+  for (let j = i + 1; j < nodes.length; j++) {
+    const shared = nodes[i].tags.filter(t => nodes[j].tags.includes(t));
+    if (shared.length) edges.push({ a: i, b: j, shared, strength: shared.length });
+  }
+
+function initNetwork() {
+  if (netReady) return;
+  netReady = true;
+  const canvas = document.getElementById('net');
+  const wrap   = canvas.parentElement;
+
+  function resize() {
+    canvas.width  = wrap.clientWidth;
+    canvas.height = Math.max(600, Math.round(wrap.clientWidth * 0.78));
+    nodes.forEach((n, i) => {
+      const a = (i / nodes.length) * 2 * Math.PI;
+      n.x = canvas.width  / 2 + canvas.width  * 0.27 * Math.cos(a);
+      n.y = canvas.height / 2 + canvas.height * 0.34 * Math.sin(a);
+      n.vx = n.vy = 0;
+    });
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function visSet() {
+    if (netFilter === 'all') return new Set(nodes.map(n => n.id));
+    /* Scepticism matches Pyrrhonian Scepticism and Academic Scepticism too */
+    const scepticismKeys = ['Scepticism', 'Pyrrhonian Scepticism', 'Academic Scepticism'];
+    /* Pre-Socratics matches all individual pre-socratic philosophers */
+    const preSocraticKeys = ['Pre-Socratics','Heraclitus','Parmenides','Democritus',
+      'Empedocles','Anaxagoras','Protagoras','Xenophanes','Anaximander'];
+    /* Peripatetics matches Aristotle and Alexander of Aphrodisias */
+    const peripateticsKeys = ['Peripatetics','Aristotle','Alexander of Aphrodisias'];
+
+    return new Set(nodes.filter(n => {
+      const ancs = n.ancients || [];
+      if (netFilter === 'Scepticism')   return ancs.some(a => scepticismKeys.includes(a));
+      if (netFilter === 'Pre-Socratics') return ancs.some(a => preSocraticKeys.includes(a));
+      if (netFilter === 'Peripatetics') return ancs.some(a => peripateticsKeys.includes(a));
+      return ancs.includes(netFilter);
+    }).map(n => n.id));
+  }
+
+  function simulate() {
+    const vis = visSet();
+    const w = canvas.width, h = canvas.height;
+    nodes.forEach(n => { n.fx = 0; n.fy = 0; });
+    nodes.forEach((a, i) => {
+      if (!vis.has(a.id)) return;
+      a.fx += (w / 2 - a.x) * 0.011; a.fy += (h / 2 - a.y) * 0.011;
+      nodes.forEach((b, j) => {
+        if (j <= i || !vis.has(b.id)) return;
+        const dx = b.x - a.x, dy = b.y - a.y, d = Math.sqrt(dx*dx + dy*dy) || 1;
+        const f = 2000 / (d * d);
+        a.fx -= f*dx/d; a.fy -= f*dy/d; b.fx += f*dx/d; b.fy += f*dy/d;
+      });
+    });
+    edges.forEach(e => {
+      const a = nodes[e.a], b = nodes[e.b];
+      if (!vis.has(a.id) || !vis.has(b.id)) return;
+      const dx = b.x - a.x, dy = b.y - a.y, d = Math.sqrt(dx*dx + dy*dy) || 1;
+      const f = (d - (e.strength >= 2 ? 100 : 175)) * 0.013 * e.strength;
+      a.fx += f*dx/d; a.fy += f*dy/d; b.fx -= f*dx/d; b.fy -= f*dy/d;
+    });
+    nodes.forEach(n => {
+      if (!vis.has(n.id) || n === dragging) return;
+      n.vx = (n.vx + n.fx) * 0.80; n.vy = (n.vy + n.fy) * 0.80;
+      n.x = Math.max(R+2, Math.min(w-R-2, n.x + n.vx));
+      n.y = Math.max(R+2, Math.min(h-R-2, n.y + n.vy));
+    });
+  }
+
+  /* Pre-load photos for canvas drawing */
+  const imgCache = {};
+  nodes.forEach(n => {
+    if (!n.photo) return;
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.src = n.photo;
+    img.onload = () => { imgCache[n.id] = img; };
+  });
+
+  function draw() {
+    const ctx = canvas.getContext('2d');
+    const vis = visSet();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    edges.forEach(e => {
+      const a = nodes[e.a], b = nodes[e.b];
+      if (!vis.has(a.id) || !vis.has(b.id)) return;
+      const hi = netSelected && (netSelected.id === e.a || netSelected.id === e.b);
+      ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+      if (e.strength >= 2) {
+        ctx.strokeStyle = hi ? '#3d3480' : 'rgba(61,52,128,0.22)';
+        ctx.lineWidth = hi ? 2.4 : 1.5; ctx.setLineDash([]);
+      } else {
+        ctx.strokeStyle = hi ? '#8a857e' : 'rgba(180,175,165,0.38)';
+        ctx.lineWidth = hi ? 1.4 : 0.9; ctx.setLineDash([5, 4]);
+      }
+      ctx.stroke(); ctx.setLineDash([]);
+    });
+
+    nodes.forEach(n => {
+      if (!vis.has(n.id)) return;
+      const isSel  = netSelected && netSelected.id === n.id;
+      const isConn = netSelected && edges.some(e =>
+        (e.a === netSelected.id && e.b === n.id) || (e.b === netSelected.id && e.a === n.id));
+      ctx.globalAlpha = (netSelected && !isSel && !isConn) ? 0.18 : 1;
+
+      if (isSel) {
+        ctx.beginPath(); ctx.arc(n.x, n.y, R+5, 0, 2*Math.PI);
+        ctx.fillStyle = FOCUS_LIGHT[n.focus] || '#eee'; ctx.fill();
+      }
+
+      /* Draw photo clipped to circle, or solid colour */
+      ctx.save();
+      ctx.beginPath(); ctx.arc(n.x, n.y, R, 0, 2*Math.PI); ctx.clip();
+      if (imgCache[n.id]) {
+        ctx.drawImage(imgCache[n.id], n.x - R, n.y - R, R*2, R*2);
+        /* Subtle tint overlay so node colour is still legible */
+        ctx.fillStyle = (FOCUS_HEX[n.focus] || '#888') + '44';
+        ctx.fillRect(n.x - R, n.y - R, R*2, R*2);
+      } else {
+        ctx.fillStyle = FOCUS_HEX[n.focus] || '#888'; ctx.fill();
+      }
+      ctx.restore();
+
+      /* Ring for selected */
+      if (isSel) {
+        ctx.beginPath(); ctx.arc(n.x, n.y, R, 0, 2*Math.PI);
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 2.5; ctx.stroke();
+      }
+
+      /* Initials (only when no photo loaded) */
+      if (!imgCache[n.id]) {
+        ctx.fillStyle = '#fff';
+        ctx.font = '500 11px "DM Sans",sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(initials(n.name), n.x, n.y);
+      }
+
+      /* Name label below */
+      ctx.fillStyle = isSel ? FOCUS_HEX[n.focus] : 'rgba(80,75,68,0.85)';
+      ctx.font = (isSel ? '500 ' : '') + '10.5px "DM Sans",sans-serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(n.name.split(' ')[0], n.x, n.y + R + 10);
+      ctx.globalAlpha = 1;
+    });
+  }
+
+  function tick() { simulate(); draw(); requestAnimationFrame(tick); }
+  tick();
+
+  function hitTest(mx, my) {
+    const vis = visSet();
+    for (const n of nodes) {
+      if (!vis.has(n.id)) continue;
+      const dx = mx - n.x, dy = my - n.y;
+      if (dx*dx + dy*dy < (R+6)*(R+6)) return n;
+    }
+    return null;
+  }
+  function getPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const sx = canvas.width / rect.width, sy = canvas.height / rect.height;
+    const src = e.touches ? e.touches[0] : e;
+    return { x: (src.clientX - rect.left)*sx, y: (src.clientY - rect.top)*sy };
+  }
+  canvas.addEventListener('mousedown', e => {
+    const {x,y} = getPos(e), n = hitTest(x,y);
+    if (n) { dragging=n; dragOX=x-n.x; dragOY=y-n.y; dragMoved=false; }
+  });
+  canvas.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    const {x,y} = getPos(e);
+    dragging.x = Math.max(R+2, Math.min(canvas.width-R-2,  x-dragOX));
+    dragging.y = Math.max(R+2, Math.min(canvas.height-R-2, y-dragOY));
+    dragging.vx = dragging.vy = 0; dragMoved = true;
+  });
+  canvas.addEventListener('mouseup', e => {
+    if (dragging && !dragMoved) selectNetNode(dragging);
+    else if (!dragging) { const {x,y}=getPos(e); const n=hitTest(x,y); if(n) selectNetNode(n); else clearNetPanel(); }
+    dragging = null;
+  });
+  canvas.addEventListener('touchstart', e => {
+    const {x,y}=getPos(e), n=hitTest(x,y);
+    if (n) { dragging=n; dragOX=x-n.x; dragOY=y-n.y; dragMoved=false; }
+  }, {passive:true});
+  canvas.addEventListener('touchmove', e => {
+    if (!dragging) return; e.preventDefault();
+    const {x,y}=getPos(e);
+    dragging.x = Math.max(R+2, Math.min(canvas.width-R-2,  x-dragOX));
+    dragging.y = Math.max(R+2, Math.min(canvas.height-R-2, y-dragOY));
+    dragging.vx = dragging.vy = 0; dragMoved = true;
+  }, {passive:false});
+  canvas.addEventListener('touchend', () => { if (dragging && !dragMoved) selectNetNode(dragging); dragging=null; });
+}
+
+function selectNetNode(n) {
+  netSelected = n;
+  const conns = edges
+    .filter(e => e.a === n.id || e.b === n.id)
+    .sort((a,b) => b.strength - a.strength)
+    .map(e => ({ s: nodes[e.a === n.id ? e.b : e.a], shared: e.shared }));
+  document.getElementById('net-panel').innerHTML = `
+    <div data-scholar-id="${n.id}" style="cursor:pointer" title="Click to expand full profile">
+      ${scholarDetailHtml(n)}
+      <p style="font-size:0.72rem;color:var(--accent);margin-top:8px">↗ Click to expand full profile</p>
+    </div>
+    <hr class="rc-divider">
+    <p class="rc-section">Shares interests with (${conns.length})</p>
+    ${conns.length
+      ? conns.map(c => `
+          <div class="conn-item" data-scholar-id="${c.s.id}" style="cursor:pointer" title="Click to expand profile">
+            <div class="conn-name">${c.s.name}</div>
+            <div class="conn-detail">${c.shared.map(t => THEMES[t]?.label || t).join(', ')} · ${c.s.uni}</div>
+          </div>`).join('')
+      : `<p style="font-size:0.8rem;color:var(--ink-faint)">No connections in current view</p>`}`;
+}
+function clearNetPanel() {
+  netSelected = null;
+  document.getElementById('net-panel').innerHTML = '<p class="panel-empty">Click any node to see a researcher\'s profile and discover who shares their interests.</p>';
+}
+function setNetFilter(tag, btn) {
+  netFilter = tag; netSelected = null; clearNetPanel();
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+/* ══════════════════════════════════════
+   VIEW 4 — SUBMIT YOUR PROFILE FORM
+   ══════════════════════════════════════ */
+const REQUIRED_FIELDS = [
+  { id: 'f-name',       errId: 'err-name',       msg: 'Please enter your full name.' },
+  { id: 'f-position',   errId: 'err-position',   msg: 'Please enter your position.' },
+  { id: 'f-institution',errId: 'err-institution',msg: 'Please enter your institution.' },
+  { id: 'f-dept',       errId: 'err-dept',       msg: 'Please enter your faculty or department.' },
+  { id: 'f-specialisms',errId: 'err-specialisms',msg: 'Please describe your specialisms.' },
+];
+
+function clearFormErrors() {
+  REQUIRED_FIELDS.forEach(f => {
+    const el = document.getElementById(f.id);
+    const err = document.getElementById(f.errId);
+    if (el)  el.classList.remove('invalid');
+    if (err) err.textContent = '';
+  });
+  const emailEl = document.getElementById('f-email');
+  const emailErr = document.getElementById('err-email');
+  if (emailEl)  emailEl.classList.remove('invalid');
+  if (emailErr) emailErr.textContent = '';
+}
+
+function validateForm() {
+  let ok = true;
+  clearFormErrors();
+
+  REQUIRED_FIELDS.forEach(f => {
+    const el  = document.getElementById(f.id);
+    const err = document.getElementById(f.errId);
+    if (el && !el.value.trim()) {
+      el.classList.add('invalid');
+      if (err) err.textContent = f.msg;
+      ok = false;
+    }
+  });
+
+  /* Optional email — validate format if filled */
+  const emailEl  = document.getElementById('f-email');
+  const emailErr = document.getElementById('err-email');
+  if (emailEl && emailEl.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value.trim())) {
+    emailEl.classList.add('invalid');
+    if (emailErr) emailErr.textContent = 'Please enter a valid email address.';
+    ok = false;
+  }
+
+  return ok;
+}
+
+document.getElementById('profile-form')?.addEventListener('submit', async function(e) {
+  e.preventDefault();
+  if (!validateForm()) return;
+
+  const btn    = document.getElementById('submit-btn');
+  const status = document.getElementById('form-status');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+  status.textContent = '';
+
+  /* Check whether the user has replaced the placeholder endpoint */
+  if (this.action.includes('YOUR_FORMSPREE_ENDPOINT')) {
+    status.textContent = '⚠ Please set your Formspree endpoint in the HTML first.';
+    btn.disabled = false;
+    btn.textContent = 'Send submission';
+    return;
+  }
+
+  try {
+    const res = await fetch(this.action, {
+      method: 'POST',
+      body: new FormData(this),
+      headers: { 'Accept': 'application/json' },
+    });
+
+    if (res.ok) {
+      document.getElementById('profile-form').style.display = 'none';
+      document.getElementById('form-success').style.display = 'block';
+    } else {
+      const data = await res.json().catch(() => ({}));
+      status.textContent = data.errors
+        ? data.errors.map(err => err.message).join(', ')
+        : 'Something went wrong. Please try again or send an email directly.';
+      btn.disabled = false;
+      btn.textContent = 'Send submission';
+    }
+  } catch {
+    status.textContent = 'Network error. Please check your connection and try again.';
+    btn.disabled = false;
+    btn.textContent = 'Send submission';
+  }
+});
+
+function resetForm() {
+  const form = document.getElementById('profile-form');
+  form.reset();
+  clearFormErrors();
+  form.style.display = 'block';
+  document.getElementById('form-success').style.display = 'none';
+  document.getElementById('submit-btn').disabled = false;
+  document.getElementById('submit-btn').textContent = 'Send submission';
+  document.getElementById('form-status').textContent = '';
+  removePhoto();
+}
+
+/* ══════════════════════════════════════
+   CLOUDINARY PHOTO UPLOAD
+   ══════════════════════════════════════ */
+const CLOUDINARY_CLOUD   = 'dspfaec6d';
+const CLOUDINARY_PRESET  = 'profiles-photos';
+const CLOUDINARY_URL     = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`;
+
+const photoInput     = document.getElementById('f-photo-upload');
+const photoHidden    = document.getElementById('f-photo');
+const photoDropZone  = document.getElementById('photo-drop-zone');
+const photoStatus    = document.getElementById('photo-upload-status');
+const photoPreview   = document.getElementById('photo-preview-wrap');
+const photoPlaceholder = document.getElementById('photo-placeholder');
+const photoPreviewImg  = document.getElementById('photo-preview-img');
+
+async function uploadToCloudinary(file) {
+  if (file.size > 5 * 1024 * 1024) {
+    setPhotoStatus('File is too large — please choose an image under 5 MB.', 'error');
+    return;
+  }
+  setPhotoStatus('Uploading…', 'uploading');
+  document.getElementById('submit-btn').disabled = true;
+
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('upload_preset', CLOUDINARY_PRESET);
+
+  try {
+    const res  = await fetch(CLOUDINARY_URL, { method: 'POST', body: fd });
+    const data = await res.json();
+    if (data.secure_url) {
+      photoHidden.value = data.secure_url;
+      photoPreviewImg.src = data.secure_url;
+      photoPreview.style.display = 'block';
+      photoPlaceholder.style.display = 'none';
+      photoDropZone.classList.add('has-preview');
+      photoInput.value = '';
+      setPhotoStatus('Photo uploaded successfully.', 'success');
+    } else {
+      setPhotoStatus('Upload failed — please try again.', 'error');
+    }
+  } catch {
+    setPhotoStatus('Network error during upload — please try again.', 'error');
+  } finally {
+    document.getElementById('submit-btn').disabled = false;
+  }
+}
+
+function setPhotoStatus(msg, type) {
+  photoStatus.textContent = msg;
+  photoStatus.className   = 'photo-upload-status' + (type ? ' ' + type : '');
+}
+
+function removePhoto(e) {
+  if (e) e.stopPropagation();
+  photoHidden.value = '';
+  photoPreviewImg.src = '';
+  photoPreview.style.display = 'none';
+  photoPlaceholder.style.display = 'block';
+  photoDropZone.classList.remove('has-preview');
+  setPhotoStatus('', '');
+}
+
+photoInput?.addEventListener('change', e => {
+  if (e.target.files[0]) uploadToCloudinary(e.target.files[0]);
+});
+
+photoDropZone?.addEventListener('dragover', e => { e.preventDefault(); photoDropZone.classList.add('dragging'); });
+photoDropZone?.addEventListener('dragleave', () => photoDropZone.classList.remove('dragging'));
+photoDropZone?.addEventListener('drop', e => {
+  e.preventDefault();
+  photoDropZone.classList.remove('dragging');
+  if (e.dataTransfer.files[0]) uploadToCloudinary(e.dataTransfer.files[0]);
+});
+
+/* ══════════════════════════════════════
+   MODAL — Option A (centred + blur)
+   ══════════════════════════════════════ */
+function openModal(scholar) {
+  const s = scholar;
+
+  /* Avatar */
+  const avEl = document.getElementById('modal-avatar');
+  if (s.photo) {
+    avEl.innerHTML = `<img src="${s.photo}" alt="${s.name}" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+      <span class="modal-avatar-lg-initials" style="display:none">${initials(s.name)}</span>`;
+  } else {
+    avEl.innerHTML = `<span class="modal-avatar-lg-initials">${initials(s.name)}</span>`;
+    avEl.style.background = FOCUS_HEX[s.focus] || '#888';
+    avEl.querySelector('span').style.color = '#fff';
+  }
+  /* Set node colour tint on avatar when photo present */
+  if (s.photo) avEl.style.background = 'var(--bg)';
+
+  /* Text */
+  document.getElementById('modal-name').textContent  = s.name;
+  document.getElementById('modal-pos').textContent   = s.position;
+  document.getElementById('modal-dept').innerHTML    = `${s.dept}<br>${s.uni}`;
+
+  /* Tags: ancient tags first, then theme tags */
+  const tagRow = document.getElementById('modal-tags');
+  tagRow.innerHTML =
+    (s.ancients || []).map(a =>
+      `<span class="modal-tag" style="background:${ANCT.bg};color:${ANCT.txt}">${a}</span>`
+    ).join('') +
+    (s.tags || []).map(t => {
+      const th = THEMES[t] || { label: t, bg: '#eee', txt: '#333' };
+      return `<span class="modal-tag" style="background:${th.bg};color:${th.txt}">${th.label}</span>`;
+    }).join('');
+
+  /* Links */
+  const linkParts = [];
+  const envelopeIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>`;
+  if (s.email) linkParts.push({ label: envelopeIcon + s.email, href: `mailto:${s.email}` });
+  if (s.web)   linkParts.push({ label: 'Personal website', href: s.web });
+  (s.links || []).forEach(l => {
+    if (l.label === 'orcid')
+      linkParts.push({ label: ORCID_SVG + ' ORCID', href: l.url });
+    else if (l.label === 'google-scholar')
+      linkParts.push({ label: GSCHOLAR_SVG + ' Google Scholar', href: l.url });
+    else
+      linkParts.push({ label: l.label, href: l.url });
+  });
+
+  const linkEl    = document.getElementById('modal-links');
+  const linkLabel = document.getElementById('modal-links-label');
+  if (linkParts.length) {
+    const extIcon = `<svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 10L10 2M10 2H5M10 2V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    linkEl.innerHTML = linkParts.map(l =>
+      `<a class="modal-link-btn" href="${l.href}" ${l.href.startsWith('mailto') ? '' : 'target="_blank" rel="noopener"'}${l.title ? ` title="${l.title}"` : ''}>${l.label}${l.href.startsWith('mailto') ? '' : extIcon}</a>`
+    ).join('');
+    linkLabel.style.display = 'block';
+  } else {
+    linkEl.innerHTML = '';
+    linkLabel.style.display = 'none';
+  }
+
+  /* Open */
+  document.body.style.overflow = 'hidden';
+  const backdrop = document.getElementById('modal-backdrop');
+  backdrop.style.display = 'flex';
+  requestAnimationFrame(() => backdrop.classList.add('open'));
+}
+
+function closeModal() {
+  const backdrop = document.getElementById('modal-backdrop');
+  backdrop.classList.remove('open');
+  backdrop.addEventListener('transitionend', () => {
+    backdrop.style.display = 'none';
+    document.body.style.overflow = '';
+  }, { once: true });
+}
+
+function closeModalOnBackdrop(e) {
+  if (e.target === document.getElementById('modal-backdrop')) closeModal();
+}
+
+/* Close on Escape key */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+
+/* ── Make every scholar chip / map card / panel card clickable ──
+   We attach a single delegated listener at the document level.
+   Each chip/card must have data-scholar-id="N" set on it.        */
+document.addEventListener('click', e => {
+  const chip = e.target.closest('[data-scholar-id]');
+  if (!chip) return;
+  const id = parseInt(chip.dataset.scholarId, 10);
+  const s  = SCHOLARS[id];
+  if (s) openModal(s);
+});
+
+</script>
+</body>
+</html>
