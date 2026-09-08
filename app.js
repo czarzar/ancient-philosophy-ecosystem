@@ -234,7 +234,7 @@ function renderSpecResults() {
       <div class="chip-head">
         ${avatarHtml(s, 'sm')}
         <div class="chip-text">
-          <div class="sc-name">${s.name}</div>
+          <div class="sc-name">${nameHtml(s)}</div>
           <div class="sc-pos">${(s.position || '').split('·')[0].trim()}</div>
         </div>
       </div>
@@ -439,7 +439,7 @@ function showGroupedPanel(city, institutions) {
         const attr = isEmeritus ? `data-emeritus-id="${idx}"` : `data-scholar-id="${idx}"`;
         return `<div class="map-r-item" ${attr} style="cursor:pointer">
           <div class="map-r-top">${avatarHtml(s,'sm')}<div class="map-r-text">
-            <p class="rc-name" style="font-size:1rem">${s.name}</p>
+            <p class="rc-name" style="font-size:1rem">${nameHtml(s)}</p>
             <p class="rc-pos" style="font-size:0.78rem;margin-top:1px">${(s.position||'').split('·')[0].trim()}</p>
           </div></div>
           ${affiliationHtml(s)}
@@ -483,7 +483,7 @@ function showMapPanel(uni, city, scholars) {
         <div class="map-r-top">
           ${avatarHtml(s, 'sm')}
           <div class="map-r-text">
-            <p class="rc-name" style="font-size:1rem">${s.name}</p>
+            <p class="rc-name" style="font-size:1rem">${nameHtml(s)}</p>
             <p class="rc-pos" style="font-size:0.78rem;margin-top:1px">${(s.position||'').split('·')[0].trim()}</p>
           </div>
         </div>
@@ -1163,7 +1163,7 @@ function scholarChipHtml(s, idx, isEmeritus, type) {
       <div class="chip-head">
         ${avatarHtml(s, 'sm')}
         <div class="chip-text">
-          <div class="sc-name">${s.name}</div>
+          <div class="sc-name">${nameHtml(s)}</div>
           <div class="sc-pos">${(s.position || '').split('·')[0].trim()}</div>
         </div>
       </div>
@@ -1524,7 +1524,7 @@ function showVisitingPanel(pinLabel, scholars) {
     const idx = VISITING_SCHOLARS.indexOf(s);
     return `<div class="map-r-item" data-visiting-id="${idx}" style="cursor:pointer" title="Click to expand profile">
       <div class="map-r-top">${avatarHtml(s,'sm')}<div class="map-r-text">
-        <p class="rc-name" style="font-size:1rem">${s.name}</p>
+        <p class="rc-name" style="font-size:1rem">${nameHtml(s)}</p>
         <p class="rc-pos" style="font-size:0.78rem;margin-top:1px">${(s.position||'').split('·')[0].trim()}</p>
       </div></div>
       ${affiliationHtml(s)}
