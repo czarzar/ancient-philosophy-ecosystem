@@ -46,8 +46,8 @@ const SCHOLARS = [
   },
   {
     name: 'Lea Cantor',
-    uni: 'University of Cambridge', dept: 'Faculty of Classics · Peterhouse',
-    city: 'Cambridge', position: 'Blacker Loewe Research Fellow in Philosophy',
+    uni: "King's College London", dept: 'Department of Philosophy',
+    city: 'London', position: 'Lecturer in Philosophy',
     focus: 'Early Greek Philosophy', ancients: ['Parmenides', 'Pyrrhonian Scepticism'],
     tags: ['epistemology', 'metaphysics'],
     email: 'lc840@cam.ac.uk',
@@ -1322,7 +1322,7 @@ const EMERITI = [
     photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777542108/terence-irwin.jpg',
   },
   {
-    name: 'Anthony Kenny',
+    name: 'Anthony Kenny', deceased: true,
     uni: 'University of Oxford', dept: 'Faculty of Philosophy · Balliol College',
     city: 'Oxford', position: "Emeritus Fellow, St John's College",
     focus: 'Aristotle', ancients: ['Aristotle', 'Plato'],
