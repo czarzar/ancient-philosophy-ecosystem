@@ -50,12 +50,11 @@ const SCHOLARS = [
     city: 'London', position: 'Lecturer in Philosophy',
     focus: 'Early Greek Philosophy', ancients: ['Parmenides', 'Pyrrhonian Scepticism'],
     tags: ['epistemology', 'metaphysics'],
-    email: 'lc840@cam.ac.uk',
+    email: 'lea.cantor@kcl.ac.uk',
     web: 'https://leacantor.com/index.html',
     links: [
-      { label: 'Faculty page', url: 'https://www.classics.cam.ac.uk/staff/dr-lea-cantor' },
-      { label: 'College page', url: 'https://www.pet.cam.ac.uk/person/cantor' },
-    , { label: 'orcid', url: 'https://orcid.org/0000-0003-3139-2839' }],
+      { label: 'Faculty page', url: 'https://www.kcl.ac.uk/people/lea-cantor' },
+      { label: 'orcid', url: 'https://orcid.org/0000-0003-3139-2839' }],
     photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1777030280/lea-cantor.jpg',
   },
   {
@@ -1699,5 +1698,15 @@ const VISITING_SCHOLARS = [
       { label: 'Faculty page', url: 'https://kings.uwo.ca/academics/our-programs/faculty-bio/?cn=gmourout' },
     ],
     photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1778666362/georgia-mouroutsou-1778666361896.jpg',
+  },
+  {
+    name: 'Phillip Mitsis',
+    uni: 'New York University', dept: 'New York University · Clare Hall',
+    city: 'Cambridge', position: 'Alexander S. Onassis Professor of Hellenic Culture and Civilization / Dan Kaylor Visiting Fellow in Hellenistic Philosophy (Cambridge)',
+    focus: 'Hellenistic', ancients: ['Plato', 'Aristotle', 'Epicureanism', 'Stoicism'],
+    tags: [],
+    email: 'phillip.mitsis@nyu.edu', web: '',
+    links: [{ label: 'Faculty page', url: 'https://as.nyu.edu/faculty/phillip-mitsis.html' }],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1792070054/g0azvi5jttvosszfkswx.jpg',
   }
 ];
