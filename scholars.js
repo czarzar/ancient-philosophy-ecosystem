@@ -1708,5 +1708,18 @@ const VISITING_SCHOLARS = [
     email: 'phillip.mitsis@nyu.edu', web: '',
     links: [{ label: 'Faculty page', url: 'https://as.nyu.edu/faculty/phillip-mitsis.html' }],
     photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1792070054/g0azvi5jttvosszfkswx.jpg',
+  },
+  {
+    name: 'David Bronstein',
+    uni: 'University of Notre Dame Australia', dept: 'Institute for Ethics and Society, University of Notre Dame Australia · Clare Hall',
+    city: 'Cambridge', position: 'Associate Professor and Senior Research Fellow',
+    focus: 'Aristotle', ancients: ['Plato', 'Aristotle', 'Aristotelian tradition', 'Philosophy of Science'],
+    tags: ['ethics', 'epistemology'],
+    email: 'david.bronstein@nd.edu.au', web: '',
+    links: [
+      { label: 'Clare Hall page', url: 'https://www.clarehall.cam.ac.uk/directory/david-bronstein/' },
+      { label: 'Faculty page', url: 'https://www.notredame.edu.au/research/institutes-and-initiatives/institute-for-ethics-and-society/people/dr-david-bronstein' },
+    ],
+    photo: 'https://res.cloudinary.com/dspfaec6d/image/upload/v1792075125/bkqn5zgrcv2igg5lyeba.jpg',
   }
 ];
